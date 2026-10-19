@@ -1,18 +1,20 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useSiteReady } from "./motion/site-ready";
 
 /** Counts from zero to `value` once visible. Years (e.g. 2005) count from a nearby start instead. */
 export function CountUp({ value, suffix = "" }: { value: number; suffix?: string }) {
-  console.log(value);
   const ref = useRef<HTMLSpanElement>(null);
   const isYear = value >= 1900 && value <= 2100;
   const start = isYear ? value - 25 : 0;
   const [display, setDisplay] = useState(value);
+  const ready = useSiteReady();
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Start counting only once the intro loader has lifted.
+    if (!el || !ready || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let frame = 0;
     const observer = new IntersectionObserver(([entry]) => {
@@ -34,7 +36,7 @@ export function CountUp({ value, suffix = "" }: { value: number; suffix?: string
       observer.disconnect();
       cancelAnimationFrame(frame);
     };
-  }, [start, value]);
+  }, [ready, start, value]);
 
   return (
     <span ref={ref} dir="ltr" className="inline-block tabular-nums">

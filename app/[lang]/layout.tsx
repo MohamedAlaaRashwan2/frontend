@@ -3,6 +3,7 @@ import { Fraunces, IBM_Plex_Sans_Arabic, Manrope, Noto_Naskh_Arabic } from "next
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { MotionProvider } from "@/components/motion/MotionProvider";
+import { introScript, SiteLoader } from "@/components/SiteLoader";
 import { dirOf, locales } from "@/lib/i18n/config";
 import { alternatesFor } from "@/lib/i18n/metadata";
 import { getDictionary, getLocale } from "@/lib/i18n/server";
@@ -63,8 +64,11 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
   const fonts = [manrope.variable, fraunces.variable, ...(locale === "ar" ? [plexArabic.variable, naskhArabic.variable] : [])];
 
   return (
-    <html lang={locale} dir={dirOf(locale)} className={`${fonts.join(" ")} h-full antialiased`}>
+    // suppressHydrationWarning: the intro script sets html[data-intro] before React hydrates.
+    <html lang={locale} dir={dirOf(locale)} className={`${fonts.join(" ")} h-full antialiased`} suppressHydrationWarning>
       <body className="flex min-h-full flex-col">
+        {/* Decides before first paint whether this visit plays the intro loader. */}
+        <script dangerouslySetInnerHTML={{ __html: introScript }} />
         <noscript>
           <style>{`[data-reveal],[data-reveal] span{opacity:1!important;transform:none!important}`}</style>
         </noscript>
@@ -75,6 +79,7 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
           {dict.nav.skip}
         </a>
         <MotionProvider>
+          <SiteLoader name={dict.brand.name} tagline={dict.brand.logoTagline} label={dict.loader.label} />
           <Header
             locale={locale}
             labels={{ ...dict.nav, requestQuote: dict.common.requestQuote }}

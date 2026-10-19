@@ -208,3 +208,264 @@ html[lang="ar"] h1.font-display {
 html[lang="ar"] .eyebrow {
   font-size: 0.875rem;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Intro loader — components/SiteLoader.tsx
+ * Shown on the first visit of a session only (html[data-intro="play"], set before first paint).
+ * Logo assembly and the early progress bar are pure CSS so they animate before JavaScript loads.
+ * ──────────────────────────────────────────────────────────────────────────── */
+html[data-intro="play"],
+html[data-intro="play"] body {
+  overflow: hidden;
+  /* Same 6s safety net as the loader itself: never leave the page locked if JavaScript fails. */
+  animation: loader-unlock 0s linear 6s forwards;
+}
+
+@keyframes loader-unlock {
+  to {
+    overflow: visible;
+  }
+}
+
+.site-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(60% 50% at 50% 45%, rgb(20 84 58 / 0.55), transparent 70%),
+    var(--color-brand-ink);
+  color: #fff;
+  /* Safety net: if JavaScript never runs, get out of the way after 6s. */
+  animation: loader-failsafe 0.4s ease 6s forwards;
+}
+
+html:not([data-intro="play"]) .site-loader {
+  display: none;
+}
+
+.site-loader__brand {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition:
+    opacity 0.45s ease,
+    transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.site-loader__logo {
+  position: relative;
+  width: 7rem;
+  aspect-ratio: 544 / 556;
+}
+
+.site-loader__logo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  animation-duration: 0.65s;
+  animation-timing-function: cubic-bezier(0.22, 1.25, 0.36, 1);
+  animation-fill-mode: forwards;
+}
+
+/* The sun drops in from above; the leaves swing in from each side and meet at the base. */
+.site-loader__sun {
+  transform-origin: 50% 60%;
+  animation-name: loader-sun;
+  animation-delay: 0.05s;
+}
+
+.site-loader__leaf-green {
+  transform-origin: 62% 92%;
+  animation-name: loader-leaf-green;
+  animation-delay: 0.15s;
+}
+
+.site-loader__leaf-blue {
+  transform-origin: 62% 92%;
+  animation-name: loader-leaf-blue;
+  animation-delay: 0.25s;
+}
+
+/* Dashed orbit ring, echoing the hero globe. */
+.site-loader__ring {
+  position: absolute;
+  top: calc(3.5rem - 5.25rem);
+  left: 50%;
+  width: 10.5rem;
+  height: 10.5rem;
+  margin-left: -5.25rem;
+  border-radius: 50%;
+  border: 1.5px dashed rgb(156 224 106 / 0.35);
+  opacity: 0;
+  animation:
+    loader-fade 0.6s ease 0.35s forwards,
+    loader-spin 14s linear infinite;
+}
+
+.site-loader__name {
+  margin-top: 1.75rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  opacity: 0;
+  animation: loader-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.4s forwards;
+}
+
+.site-loader__tagline {
+  margin-top: 0.35rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.55);
+  opacity: 0;
+  animation: loader-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.5s forwards;
+}
+
+html[lang="ar"] .site-loader__tagline {
+  font-size: 0.8rem;
+}
+
+.site-loader__track {
+  position: relative;
+  margin-top: 1.75rem;
+  width: 10rem;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.12);
+  opacity: 0;
+  animation: loader-fade 0.5s ease 0.55s forwards;
+}
+
+.site-loader__bar {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--secondaryColor), #9ce06a);
+  transform: scaleX(0.08);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+  /* Before JavaScript takes over with real progress, creep forward so the bar never looks frozen. */
+  animation: loader-creep 2.2s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.site-loader__bar[data-live] {
+  animation: none;
+}
+
+[dir="rtl"] .site-loader__bar {
+  transform-origin: right;
+  background: linear-gradient(270deg, var(--secondaryColor), #9ce06a);
+}
+
+/* Exit: the brand lifts away, then the curtain slides up to reveal the hero. */
+.site-loader[data-phase="leaving"] {
+  pointer-events: none;
+  transform: translateY(-100%);
+  transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1) 0.1s;
+}
+
+.site-loader[data-phase="leaving"] .site-loader__brand {
+  opacity: 0;
+  transform: translateY(-1.5rem);
+}
+
+@keyframes loader-sun {
+  from {
+    opacity: 0;
+    transform: translateY(-18%) rotate(-10deg) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes loader-leaf-green {
+  from {
+    opacity: 0;
+    transform: translateX(-20%) rotate(-16deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes loader-leaf-blue {
+  from {
+    opacity: 0;
+    transform: translateX(20%) rotate(16deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes loader-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.6rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes loader-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loader-creep {
+  from {
+    transform: scaleX(0.08);
+  }
+  to {
+    transform: scaleX(0.55);
+  }
+}
+
+@keyframes loader-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* Reduced motion: no assembly or sliding — the brand simply appears and the screen fades out. */
+@media (prefers-reduced-motion: reduce) {
+  .site-loader__logo img,
+  .site-loader__name,
+  .site-loader__tagline,
+  .site-loader__track,
+  .site-loader__ring {
+    animation: none;
+    opacity: 1;
+  }
+
+  .site-loader__ring {
+    display: none;
+  }
+
+  .site-loader[data-phase="leaving"] {
+    transform: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+}

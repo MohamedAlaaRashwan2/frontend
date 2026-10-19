@@ -5,7 +5,7 @@ import { AnimatePresence, type Variants } from "motion/react";
 import * as m from "motion/react-m";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { localeNames, localizePath, switchLocalePath, type Locale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { navItems } from "@/lib/site";
@@ -45,6 +45,7 @@ export function Header({ locale, labels, brand, contact }: Props) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const lenis = useLenis();
+  const pausedScroll = useRef(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -56,8 +57,14 @@ export function Header({ locale, labels, brand, contact }: Props) {
   // Freeze the page (and Lenis' smooth scroll) behind the open mobile menu; Escape closes it.
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
-    if (open) lenis?.stop();
-    else lenis?.start();
+    // Only resume scrolling we paused ourselves (the intro loader may also be holding it).
+    if (open && lenis) {
+      lenis.stop();
+      pausedScroll.current = true;
+    } else if (!open && pausedScroll.current) {
+      lenis?.start();
+      pausedScroll.current = false;
+    }
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);

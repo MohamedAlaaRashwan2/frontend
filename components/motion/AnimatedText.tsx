@@ -3,6 +3,7 @@
 import type { Variants } from "motion/react";
 import * as m from "motion/react-m";
 import { EASE_OUT } from "../Reveal";
+import { useSiteReady } from "./site-ready";
 
 type Segment = { text: string; className?: string };
 
@@ -37,7 +38,13 @@ export function AnimatedText({
 }) {
   const Tag = tags[as];
   const parts = segments ?? [{ text: text ?? "" }];
-  const play = trigger === "mount" ? { animate: "visible" } : { whileInView: "visible", viewport: { once: true, margin: "0px 0px -10% 0px" } };
+  // Hold every entrance until the intro loader has lifted, so it isn't played unseen behind it.
+  const ready = useSiteReady();
+  const play = !ready
+    ? {}
+    : trigger === "mount"
+      ? { animate: "visible" }
+      : { whileInView: "visible", viewport: { once: true, margin: "0px 0px -10% 0px" } };
 
   return (
     <Tag

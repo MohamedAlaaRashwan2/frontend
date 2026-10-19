@@ -243,6 +243,10 @@ const en = {
     },
   },
 
+  loader: {
+    label: "Loading Al Khairat…",
+  },
+
   notFound: {
     title: "This shipment went off course.",
     body: "The page you're looking for doesn't exist or has been moved.",

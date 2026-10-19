@@ -1,6 +1,7 @@
 "use client";
 
 import * as m from "motion/react-m";
+import { useSiteReady } from "./motion/site-ready";
 
 const tags = { div: m.div, li: m.li, section: m.section, article: m.article };
 
@@ -23,13 +24,15 @@ export function Reveal({
   spotlight?: boolean;
 }) {
   const Tag = tags[as];
+  // Hold the entrance until the intro loader has lifted.
+  const ready = useSiteReady();
   return (
     <Tag
       data-reveal=""
       data-spotlight={spotlight ? "" : undefined}
       className={className}
       initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      whileInView={ready ? { opacity: 1, y: 0 } : undefined}
       viewport={{ once: true, margin: "0px 0px -10% 0px" }}
       transition={{ duration: 0.8, ease: EASE_OUT, delay: delay / 1000 }}
     >
