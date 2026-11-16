@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KHAIRAT website
 
-## Getting Started
+Bilingual (English and Arabic) corporate site for KHAIRAT, an Egyptian food supply-chain partner. Built with Next.js App Router and Tailwind CSS.
 
-First, run the development server:
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # then fill in the values
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Checks: `npx tsc --noEmit`, `npm run lint`, `npm run build`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This version of Next.js differs from older ones. Read `node_modules/next/dist/docs/` before changing framework-level code (see `AGENTS.md`).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment
 
-## Learn More
+| Variable | Purpose | Required |
+| --- | --- | --- |
+| `QUOTE_WEBHOOK_URL` | Where inquiries are POSTed as JSON (CRM, Zapier/Make, form service) | Yes, otherwise the form tells visitors their request was not sent |
+| `NEXT_PUBLIC_SITE_URL` | Public origin, used for canonical URLs and the sitemap | Yes for a custom domain (falls back to Vercel's production URL) |
+| `NEXT_PUBLIC_STRAPI_URL` | Strapi host, used for product photos only | No |
 
-To learn more about Next.js, take a look at the following resources:
+## Where things live
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| To change | Edit |
+| --- | --- |
+| Any wording | `lib/i18n/dictionaries/en.ts` and `ar.ts`. TypeScript fails the build if the two drift apart |
+| Services, products, stages, images | `lib/content.ts` |
+| Form questions per inquiry type | `lib/inquiry.ts`, used by both the form and the server action |
+| Contact details | `lib/site.ts` |
+| Colours, type scale, motion | `app/globals.css` |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Pages are in `app/[lang]/`. Each service page is under `app/[lang]/services/`, built from the shared sections in `components/ui.tsx`.
 
-## Deploy on Vercel
+## Content accuracy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The site states only what the business brief confirms. Do not add capacities, temperatures, certificates, markets, volumes, client names or equipment until the company confirms them.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Open items: `docs/KHAIRAT-COMPANY-CONFIRMATION.md`, and `TODO(company-confirm)` comments in the code
+- Photography needed: `docs/ASSET-CHECKLIST.md`
+- Image licences: `public/images/CREDITS.md`
+
+Strapi text is not used, because the current entries contain unverified claims. See the note in `lib/strapi.ts`.

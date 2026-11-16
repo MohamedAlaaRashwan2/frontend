@@ -1,42 +1,37 @@
 "use client";
 
-import * as m from "motion/react-m";
-import { useSiteReady } from "./motion/site-ready";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 
-const tags = { div: m.div, li: m.li, section: m.section, article: m.article };
+/** Set before first paint. `[data-rise]` content only hides when this class is present, so it can't get stuck hidden. */
+export const motionScript = `document.documentElement.classList.add("js")`;
 
-export const EASE_OUT = [0.2, 0.7, 0.2, 1] as const;
+/**
+ * Plays each `[data-rise]` and `[data-photo]` element's entrance once as it scrolls into view. The styles live in globals.css
+ * and are disabled for prefers-reduced-motion. Runs again on navigation so new pages get the same treatment.
+ */
+export function RevealObserver() {
+  const pathname = usePathname();
 
-/** Fades its children up into view the first time they scroll into the viewport. */
-export function Reveal({
-  children,
-  delay = 0,
-  className,
-  as = "div",
-  spotlight = false,
-}: {
-  children: React.ReactNode;
-  /** Delay in milliseconds, used to stagger items in a grid. */
-  delay?: number;
-  className?: string;
-  as?: keyof typeof tags;
-  /** Adds the cursor-following highlight on hover (see globals.css). */
-  spotlight?: boolean;
-}) {
-  const Tag = tags[as];
-  // Hold the entrance until the intro loader has lifted.
-  const ready = useSiteReady();
-  return (
-    <Tag
-      data-reveal=""
-      data-spotlight={spotlight ? "" : undefined}
-      className={className}
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={ready ? { opacity: 1, y: 0 } : undefined}
-      viewport={{ once: true, margin: "0px 0px -10% 0px" }}
-      transition={{ duration: 0.8, ease: EASE_OUT, delay: delay / 1000 }}
-    >
-      {children}
-    </Tag>
-  );
+  useEffect(() => {
+    const items = document.querySelectorAll<HTMLElement>("[data-rise]:not([data-risen]), [data-photo]:not([data-risen]), [data-rule]:not([data-risen]), [data-route]:not([data-risen])");
+    if (!("IntersectionObserver" in window)) {
+      items.forEach((el) => el.setAttribute("data-risen", ""));
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.setAttribute("data-risen", "");
+          observer.unobserve(entry.target);
+        }
+      },
+      { rootMargin: "0px 0px -8% 0px" },
+    );
+    items.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [pathname]);
+
+  return null;
 }

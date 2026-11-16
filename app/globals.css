@@ -1,471 +1,411 @@
 @import "tailwindcss";
 
-:root {
-  --background: #f7f5ef;
-  --foreground: #1b2620;
-  --maneColor: #14543a;
-  --secondaryColor: #56b11f;
-
-  --font-body: var(--font-manrope), system-ui, sans-serif;
-  --font-heading: var(--font-fraunces), Georgia, serif;
-}
-
-/* Arabic faces first; Latin words inside Arabic text fall through to the English fonts. */
-html[lang="ar"] {
-  --font-body: var(--font-plex-arabic), var(--font-manrope), system-ui, sans-serif;
-  --font-heading: var(--font-naskh-arabic), var(--font-fraunces), serif;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-surface: #ffffff;
-  --color-sand: #ece7da;
-  --color-muted: #5d6b63;
-  --color-line: #ddd8ca;
-
-  --color-brand: var(--maneColor);
-  --color-brand-deep: #0c3825;
-  --color-brand-ink: #082619;
-  --color-accent: var(--secondaryColor);
-  --color-accent-soft: #e4f3d8;
-  --color-gold: #c9a45c;
+/*
+ * KHAIRAT design tokens. Direction: industrial and confident.
+ * Colours come from the flat logo: green (forest), orange (the `amber` token, used like a signal colour) and blue (cold).
+ * Blue is reserved for cold-chain content. Heavy type, square corners, thick rules, no shadows at rest.
+ * Gold-logo palette, for switching back: forest #0c3b22, forest-deep #072816, leaf #00602a, amber #d6a454,
+ * cold #0a3f8f, cold-deep #032c69, cold-bright #3a7fd6 (logo file: /images/logo-khairat-gold.png).
+ */
+@theme {
+  --color-forest: #0b3a26;
+  --color-forest-deep: #06281a;
+  --color-leaf: #105235;
+  --color-paper: #f7f4ed;
+  --color-sand: #e9e2d3;
+  --color-sand-deep: #dcd3bf;
+  --color-ink: #151a17;
+  --color-charcoal: #1d2320;
+  --color-amber: #e67a24;
+  --color-cold: #0c548f;
+  --color-cold-deep: #083d6b;
+  --color-cold-bright: #3b86d1;
+  --color-error: #a3261b;
 
   --font-sans: var(--font-body);
   --font-display: var(--font-heading);
+
+  --container-page: 100rem;
+  --container-text: 42rem;
+
+  --shadow-float: 0 18px 40px rgb(6 40 26 / 0.25);
+
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #105235;
+  border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0b3a26;
+  border-radius: 0px;
+  border: 1px solid #06281a;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #e67a24;
+}
+
+::-webkit-scrollbar-corner {
+  background: #241946;
+}
+
+:root {
+  --font-body: var(--font-manrope), system-ui, sans-serif;
+  --font-heading: var(--font-manrope), system-ui, sans-serif;
+  --page-gutter: clamp(1rem, 3vw, 2.5rem);
+  --chapter-pad: clamp(3.5rem, 8vw, 8rem);
+  --header-height: 4.5rem;
+}
+
+/* Arabic faces first; Latin words inside Arabic text fall through to Manrope. */
+html[lang="ar"] {
+  --font-body: var(--font-plex-arabic), var(--font-manrope), system-ui, sans-serif;
+  --font-heading: var(--font-alexandria), var(--font-manrope), system-ui, sans-serif;
 }
 
 @layer base {
+  html {
+    scroll-padding-top: calc(var(--header-height) + 1rem);
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
-    background: var(--background);
-    color: var(--foreground);
+    background: var(--color-paper);
+    color: var(--color-ink);
     font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading);
+    text-wrap: balance;
   }
 
   ::selection {
-    background: var(--secondaryColor);
-    color: #fff;
+    background: var(--color-amber);
+    color: var(--color-ink);
   }
 
   :focus-visible {
-    outline: 2px solid var(--secondaryColor);
+    outline: 3px solid var(--color-cold-bright);
     outline-offset: 3px;
   }
-}
 
-@utility container-x {
-  width: 100%;
-  max-width: 80rem;
-  margin-inline: auto;
-  padding-inline: 1.25rem;
-
-  @media (width >= 48rem) {
-    padding-inline: 2rem;
+  .on-dark :focus-visible {
+    outline-color: var(--color-amber);
   }
 }
 
-@utility eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 0.75rem;
+/* Type scale: five steps, used everywhere. */
+@utility t-display {
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 7vw, 7rem);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+@utility t-title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.9rem, 4.2vw, 4rem);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+}
+
+@utility t-sub {
+  font-family: var(--font-heading);
+  font-size: clamp(1.2rem, 1.7vw, 1.625rem);
   font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--secondaryColor);
-
-  &::before {
-    content: "";
-    width: 1.75rem;
-    height: 1px;
-    background: currentColor;
-  }
+  line-height: 1.2;
+  letter-spacing: -0.015em;
 }
 
-@utility grain {
+@utility t-lead {
+  font-size: clamp(1.1rem, 1.4vw, 1.3rem);
+  line-height: 1.5;
+}
+
+@utility t-small {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+@utility shell {
+  width: 100%;
+  max-width: var(--container-page);
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+}
+
+@utility chapter {
+  padding-block: var(--chapter-pad);
+}
+
+/* Arabic never takes tracking (it breaks the joins) and needs more room in its lines. */
+html[lang="ar"] .t-display,
+html[lang="ar"] .t-title,
+html[lang="ar"] .t-sub {
+  letter-spacing: 0;
+}
+
+html[lang="ar"] .t-display {
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+html[lang="ar"] .t-title {
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+html[lang="ar"] .t-sub {
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+html[lang="ar"] body {
+  line-height: 1.8;
+}
+
+html[lang="ar"] .t-lead {
+  line-height: 1.75;
+}
+
+/* The heavy rule that opens a section. Draws in from the reading side. */
+.rule {
+  display: block;
+  height: 4px;
+  background: currentColor;
+  transform-origin: left;
+}
+
+[dir="rtl"] .rule {
+  transform-origin: right;
+}
+
+/* Header links: a thin line grows from the reading side. */
+.nav-link {
   position: relative;
-  isolation: isolate;
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    opacity: 0.08;
-    pointer-events: none;
-    background-image: radial-gradient(rgb(255 255 255 / 0.9) 1px, transparent 1px);
-    background-size: 22px 22px;
-  }
 }
 
-/* Cursor-following highlight for [data-spotlight] cards — position set by components/motion/SpotlightTracker.tsx */
-[data-spotlight] {
-  position: relative;
-  isolation: isolate;
-  --spot-color: rgb(86 177 31 / 0.12);
-}
-
-[data-spotlight]::before {
+.nav-link::after {
   content: "";
   position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  background: radial-gradient(420px circle at var(--spot-x, 50%) var(--spot-y, 50%), var(--spot-color), transparent 45%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
+  inset-inline: 0.75rem;
+  bottom: 0.4rem;
+  height: 2px;
+  background: var(--color-amber);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+[dir="rtl"] .nav-link::after {
+  transform-origin: right;
+}
+
+.nav-link-active::after,
+.nav-link[aria-current="page"]::after {
+  transform: scaleX(1);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  [data-spotlight]:hover::before {
-    opacity: 1;
+  .nav-link:hover::after {
+    transform: scaleX(1);
   }
 }
 
-/* Smooth FAQ open/close where supported (progressive enhancement, no JS). */
-@media (prefers-reduced-motion: no-preference) {
-  :root {
-    interpolate-size: allow-keywords;
-  }
-
-  details::details-content {
-    block-size: 0;
-    overflow: clip;
-    transition:
-      block-size 0.4s cubic-bezier(0.2, 0.7, 0.2, 1),
-      content-visibility 0.4s allow-discrete;
-  }
-
-  details[open]::details-content {
-    block-size: auto;
-  }
-}
-
-@keyframes slow-zoom {
-  from {
-    transform: scale(1.08);
-  }
-  to {
-    transform: scale(1);
-  }
-}
-
-@keyframes marquee {
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-/* In RTL the strip is anchored to the right, so it scrolls the other way. */
-@keyframes marquee-rtl {
-  to {
-    transform: translateX(50%);
-  }
-}
-
-.animate-slow-zoom {
-  animation: slow-zoom 12s ease-out both;
-}
-
-.animate-marquee {
-  animation: marquee 40s linear infinite;
-}
-
-[dir="rtl"] .animate-marquee {
-  animation-name: marquee-rtl;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-slow-zoom,
-  .animate-marquee {
-    animation: none;
-  }
+/* A row of the chain lights up as you reach it. Without script or with reduced motion, every row is lit. */
+.chain-row {
+  color: var(--color-paper);
 }
 
 /*
- * Arabic typography. Kept outside @layer so it overrides Tailwind utilities regardless of specificity.
- * Letter-spacing breaks the joins between Arabic letters, and Naskh needs taller lines than Latin.
+ * ─── Motion ───
+ * Considered, not constant: short, soft, transform and opacity only, no bounce and nothing looping.
+ * Everything here is off for prefers-reduced-motion.
  */
-html[lang="ar"] * {
-  letter-spacing: normal;
-}
-
-html[lang="ar"] p,
-html[lang="ar"] li,
-html[lang="ar"] dd {
-  line-height: 1.9;
-}
-
-html[lang="ar"] .font-display {
-  line-height: 1.45;
-}
-
-html[lang="ar"] h1.font-display {
-  line-height: 1.3;
-}
-
-html[lang="ar"] .eyebrow {
-  font-size: 0.875rem;
-}
-
-/* ─────────────────────────────────────────────────────────────────────────────
- * Intro loader — components/SiteLoader.tsx
- * Shown on the first visit of a session only (html[data-intro="play"], set before first paint).
- * Logo assembly and the early progress bar are pure CSS so they animate before JavaScript loads.
- * ──────────────────────────────────────────────────────────────────────────── */
-html[data-intro="play"],
-html[data-intro="play"] body {
-  overflow: hidden;
-  /* Same 6s safety net as the loader itself: never leave the page locked if JavaScript fails. */
-  animation: loader-unlock 0s linear 6s forwards;
-}
-
-@keyframes loader-unlock {
-  to {
-    overflow: visible;
-  }
-}
-
-.site-loader {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: grid;
-  place-items: center;
-  background:
-    radial-gradient(60% 50% at 50% 45%, rgb(20 84 58 / 0.55), transparent 70%),
-    var(--color-brand-ink);
-  color: #fff;
-  /* Safety net: if JavaScript never runs, get out of the way after 6s. */
-  animation: loader-failsafe 0.4s ease 6s forwards;
-}
-
-html:not([data-intro="play"]) .site-loader {
-  display: none;
-}
-
-.site-loader__brand {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition:
-    opacity 0.45s ease,
-    transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-
-.site-loader__logo {
-  position: relative;
-  width: 7rem;
-  aspect-ratio: 544 / 556;
-}
-
-.site-loader__logo img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  animation-duration: 0.65s;
-  animation-timing-function: cubic-bezier(0.22, 1.25, 0.36, 1);
-  animation-fill-mode: forwards;
-}
-
-/* The sun drops in from above; the leaves swing in from each side and meet at the base. */
-.site-loader__sun {
-  transform-origin: 50% 60%;
-  animation-name: loader-sun;
-  animation-delay: 0.05s;
-}
-
-.site-loader__leaf-green {
-  transform-origin: 62% 92%;
-  animation-name: loader-leaf-green;
-  animation-delay: 0.15s;
-}
-
-.site-loader__leaf-blue {
-  transform-origin: 62% 92%;
-  animation-name: loader-leaf-blue;
-  animation-delay: 0.25s;
-}
-
-/* Dashed orbit ring, echoing the hero globe. */
-.site-loader__ring {
-  position: absolute;
-  top: calc(3.5rem - 5.25rem);
-  left: 50%;
-  width: 10.5rem;
-  height: 10.5rem;
-  margin-left: -5.25rem;
-  border-radius: 50%;
-  border: 1.5px dashed rgb(156 224 106 / 0.35);
-  opacity: 0;
-  animation:
-    loader-fade 0.6s ease 0.35s forwards,
-    loader-spin 14s linear infinite;
-}
-
-.site-loader__name {
-  margin-top: 1.75rem;
-  font-size: 1.6rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  opacity: 0;
-  animation: loader-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.4s forwards;
-}
-
-.site-loader__tagline {
-  margin-top: 0.35rem;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: rgb(255 255 255 / 0.55);
-  opacity: 0;
-  animation: loader-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.5s forwards;
-}
-
-html[lang="ar"] .site-loader__tagline {
-  font-size: 0.8rem;
-}
-
-.site-loader__track {
-  position: relative;
-  margin-top: 1.75rem;
-  width: 10rem;
-  height: 2px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.12);
-  opacity: 0;
-  animation: loader-fade 0.5s ease 0.55s forwards;
-}
-
-.site-loader__bar {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--secondaryColor), #9ce06a);
-  transform: scaleX(0.08);
-  transform-origin: left;
-  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
-  /* Before JavaScript takes over with real progress, creep forward so the bar never looks frozen. */
-  animation: loader-creep 2.2s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
-}
-
-.site-loader__bar[data-live] {
-  animation: none;
-}
-
-[dir="rtl"] .site-loader__bar {
-  transform-origin: right;
-  background: linear-gradient(270deg, var(--secondaryColor), #9ce06a);
-}
-
-/* Exit: the brand lifts away, then the curtain slides up to reveal the hero. */
-.site-loader[data-phase="leaving"] {
-  pointer-events: none;
-  transform: translateY(-100%);
-  transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1) 0.1s;
-}
-
-.site-loader[data-phase="leaving"] .site-loader__brand {
-  opacity: 0;
-  transform: translateY(-1.5rem);
-}
-
-@keyframes loader-sun {
-  from {
+@media (prefers-reduced-motion: no-preference) {
+  /* Hidden state only applies once script is confirmed running, so content can never get stuck invisible. */
+  html.js [data-rise] {
     opacity: 0;
-    transform: translateY(-18%) rotate(-10deg) scale(0.9);
+    transform: translateY(1.25rem);
   }
-  to {
+
+  html.js [data-rise][data-risen] {
     opacity: 1;
     transform: none;
+    transition:
+      opacity 0.55s ease,
+      transform 0.75s var(--ease-out-strong);
+    transition-delay: calc(var(--rise-order, 0) * 60ms);
   }
-}
 
-@keyframes loader-leaf-green {
-  from {
-    opacity: 0;
-    transform: translateX(-20%) rotate(-16deg);
+  /* Section rules draw in. */
+  html.js [data-rule] {
+    transform: scaleX(0);
   }
-  to {
+
+  html.js [data-rule][data-risen] {
+    transform: none;
+    transition: transform 1s var(--ease-out-strong);
+  }
+
+  /* Export route lines draw from Egypt to the market. */
+  html.js [data-route] {
+    transform: scaleX(0);
+  }
+
+  html.js [data-route][data-risen] {
+    transform: none;
+    transition: transform 1.2s var(--ease-out-strong);
+    transition-delay: calc(var(--rise-order, 0) * 140ms);
+  }
+
+  /* Photographs are uncovered from below and settle as they arrive. */
+  html.js [data-photo] {
+    clip-path: inset(0 0 14% 0);
+  }
+
+  html.js [data-photo] img {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+
+  html.js [data-photo][data-risen] {
+    clip-path: inset(0);
+    transition: clip-path 0.9s var(--ease-out-strong);
+  }
+
+  html.js [data-photo][data-risen] img {
     opacity: 1;
     transform: none;
+    transition:
+      opacity 0.6s ease,
+      transform 1.3s var(--ease-out-strong);
+  }
+
+  .page-enter {
+    animation: fade-in 0.26s ease-out both;
+  }
+
+  .hero-photo {
+    animation: hero-settle 1.8s var(--ease-out-strong) both;
+  }
+
+  .hero-rise {
+    animation: rise-in 0.8s var(--ease-out-strong) var(--hero-delay, 0ms) both;
+  }
+
+  .form-step {
+    animation: rise-in 0.32s var(--ease-out-strong) both;
+  }
+
+  html.js .chain-row {
+    color: rgb(247 244 237 / 0.62);
+    transition: color 0.35s ease;
+  }
+
+  html.js .chain-row[data-on="true"] {
+    color: var(--color-paper);
+  }
+
+  .service-photo {
+    transition: opacity 0.45s ease;
+  }
+
+  .nav-link::after {
+    transition: transform 0.25s var(--ease-out-strong);
+  }
+
+  .arrow-nudge svg {
+    transition: translate 0.2s var(--ease-out-strong);
+  }
+
+  .press {
+    transition:
+      background-color 0.18s ease,
+      color 0.18s ease,
+      transform 0.14s ease-out;
+  }
+
+  .press:active {
+    transform: scale(0.98);
+  }
+
+  .zoom-frame img {
+    transition: transform 0.9s var(--ease-out-strong);
+  }
+
+  /* Touch screens would otherwise keep these "hovered" after a tap. */
+  @media (hover: hover) and (pointer: fine) {
+    a:hover .zoom-frame img,
+    html.js a:hover .zoom-frame[data-photo][data-risen] img {
+      transform: scale(1.03);
+    }
+
+    .arrow-nudge:hover svg {
+      translate: 0.25rem 0;
+    }
+
+    [dir="rtl"] .arrow-nudge:hover svg {
+      translate: -0.25rem 0;
+    }
+  }
+
+  .arrow-nudge:focus-visible svg {
+    translate: 0.25rem 0;
+  }
+
+  [dir="rtl"] .arrow-nudge:focus-visible svg {
+    translate: -0.25rem 0;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.875rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes hero-settle {
+    from {
+      transform: scale(1.05);
+    }
+    to {
+      transform: none;
+    }
   }
 }
 
-@keyframes loader-leaf-blue {
-  from {
-    opacity: 0;
-    transform: translateX(20%) rotate(16deg);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes loader-rise {
-  from {
-    opacity: 0;
-    transform: translateY(0.6rem);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes loader-fade {
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes loader-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes loader-creep {
-  from {
-    transform: scaleX(0.08);
-  }
-  to {
-    transform: scaleX(0.55);
-  }
-}
-
-@keyframes loader-failsafe {
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
-
-/* Reduced motion: no assembly or sliding — the brand simply appears and the screen fades out. */
-@media (prefers-reduced-motion: reduce) {
-  .site-loader__logo img,
-  .site-loader__name,
-  .site-loader__tagline,
-  .site-loader__track,
-  .site-loader__ring {
-    animation: none;
-    opacity: 1;
-  }
-
-  .site-loader__ring {
+@media print {
+  header,
+  footer {
     display: none;
-  }
-
-  .site-loader[data-phase="leaving"] {
-    transform: none;
-    opacity: 0;
-    transition: opacity 0.4s ease;
   }
 }
