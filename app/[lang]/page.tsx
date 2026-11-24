@@ -53,9 +53,7 @@ export default async function Home() {
 
       {/* 2. Importers first: markets, then products with a direct way to ask for a quote. */}
       <Section title={t.exportTitle} intro={t.exportBody} head={<ButtonLink href={contactHref("export")} variant="forest">{dict.common.exportQuote}</ButtonLink>}>
-        <div {...rise()}>
-          <ExportRoutes />
-        </div>
+        <ExportRoutes locale={locale} />
         <div className="mt-10 flex items-end justify-between gap-4 md:mt-14">
           <h3 className="t-sub">{t.productsLabel}</h3>
           <ArrowLink href="/products">{t.productsAll}</ArrowLink>

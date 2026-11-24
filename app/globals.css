@@ -18,6 +18,8 @@
   --color-charcoal: #1d2320;
   --color-amber: #f0b531;
   --color-copper: #be7d3c;
+  /* Gold dark enough for small text on paper and sand (≥ 4.5:1). */
+  --color-gold-ink: #8a6212;
   --color-earth: #805437;
   --color-cold: #0b5694;
   --color-cold-deep: #083f6d;

@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ExportSolutionsPage() {
-  const dict = await getDictionary();
+  const [locale, dict] = await Promise.all([getLocale(), getDictionary()]);
   const t = dict.exportTrade;
 
   return (
@@ -30,7 +30,7 @@ export default async function ExportSolutionsPage() {
       />
       <Photo id="vessel" priority parallax={6} sizes="100vw" position="50% 60%" className="aspect-[16/10] md:aspect-[21/8]" />
       <Section title={dict.markets.label} intro={t.coverTitle}>
-        <ExportRoutes />
+        <ExportRoutes locale={locale} />
         <div className="mt-10">
           <RuledList items={t.cover} columns={3} />
         </div>
