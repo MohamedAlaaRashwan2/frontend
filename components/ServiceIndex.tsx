@@ -19,7 +19,8 @@ export type ServiceRow = {
  * All services as one index. On desktop the picture beside the list follows the row you point at or focus: the new
  * picture is uncovered over the previous one while it settles, so the change reads as a cut, not a flicker.
  * On phones the rows stand alone, which keeps the section short.
- */
+*/
+
 export function ServiceIndex({ rows, illustrative }: { rows: ServiceRow[]; illustrative: string }) {
   const [active, setActive] = useState(0);
   // Pictures load once the visitor engages with the list, so eight photographs don't weigh down the first view.
