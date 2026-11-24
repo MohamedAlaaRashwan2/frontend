@@ -25,7 +25,7 @@ export default async function BusinessStoragePage() {
           { label: dict.services.items.business.name, href: serviceHref("business") },
         ]}
       />
-      <Photo id="warehouse" priority sizes="100vw" className="aspect-[16/10] md:aspect-[21/8]" />
+      <Photo id="warehouse" priority parallax={6} sizes="100vw" className="aspect-[16/10] md:aspect-[21/8]" />
       <Section title={t.exampleTitle}>
         <Steps columns={3} items={t.example} />
       </Section>

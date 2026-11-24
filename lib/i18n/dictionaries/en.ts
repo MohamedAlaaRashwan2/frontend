@@ -11,7 +11,7 @@ const en = {
     country: "Egypt",
     address: "Tariq Qilishan, Beheira, Egypt",
   },
-
+  
   nav: {
     home: "Home",
     about: "About",

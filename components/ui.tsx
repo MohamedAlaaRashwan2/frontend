@@ -5,6 +5,7 @@ import { getDictionary, getLocale, href as localeHref } from "@/lib/i18n/server"
 import { breadcrumbJsonLd } from "@/lib/seo";
 import { ContactForm } from "./ContactForm";
 import { Icon } from "./Icon";
+import { Words } from "./motion/Words";
 import type { InquiryIntent } from "@/lib/inquiry";
 
 /** next/link that prefixes internal paths with the current locale ("/contact" → "/ar/contact"). */
@@ -47,8 +48,8 @@ export function AnchorButton({ href = "#inquiry", children, variant = "amber" }:
 
 export function ArrowLink({ href, children, className = "" }: { href: string; children: React.ReactNode; className?: string }) {
   return (
-    <LocaleLink href={href} className={`arrow-nudge inline-flex min-h-11 items-center gap-2 font-bold whitespace-nowrap underline decoration-2 underline-offset-4 ${className}`}>
-      {children}
+    <LocaleLink href={href} className={`arrow-nudge inline-flex min-h-11 items-center gap-2 font-bold whitespace-nowrap ${className}`}>
+      <span className="link-line">{children}</span>
       <Icon name="arrow" className="size-5 shrink-0" strokeWidth={2.25} />
     </LocaleLink>
   );
@@ -66,6 +67,8 @@ export async function Photo({
   src,
   alt,
   position,
+  reveal = "rise",
+  parallax,
 }: {
   id: ImageId;
   className?: string;
@@ -75,11 +78,21 @@ export async function Photo({
   src?: string;
   alt?: string;
   position?: string;
+  /**
+   * How the photograph arrives. "rise" uncovers it from below as it scrolls in, "wide" opens it from the centre (for
+   * full-width banners), "hero" settles it on load (for a banner that opens the page; it is never hidden, so it can be
+   * the page's largest paint). Priority photos default to "hero".
+   */
+  reveal?: "rise" | "wide" | "hero";
+  /** Drift strength in percent for full-width banners. */
+  parallax?: number;
 }) {
   const [locale, dict] = await Promise.all([getLocale(), getDictionary()]);
   const image = images[id];
-  return (
-    <div data-photo={priority ? undefined : ""} className={`zoom-frame relative overflow-hidden bg-sand-deep ${className}`}>
+  const mode = priority ? "hero" : reveal;
+  const motion =
+    mode === "hero" ? { "data-hero": "", "data-hero-photo": "" } : { "data-photo": mode === "wide" ? "wide" : "" };
+  const picture = (
       <Image
         src={src ?? image.src}
         alt={alt ?? image[locale]}
@@ -90,6 +103,17 @@ export async function Photo({
         className="object-cover"
         style={position ? { objectPosition: position } : undefined}
       />
+  );
+  return (
+    <div {...motion} className={`zoom-frame relative overflow-hidden bg-sand-deep ${className}`}>
+      {parallax ? (
+        // Taller than the frame, so the drift never shows an edge.
+        <div data-parallax={parallax} className="absolute inset-x-0 -top-[10%] h-[120%]">
+          {picture}
+        </div>
+      ) : (
+        picture
+      )}
       {!src && image.kind === "operations" && (
         <span className="absolute start-0 bottom-0 bg-ink/85 px-2.5 py-1 text-[0.875rem] leading-snug text-paper">{dict.common.illustrative}</span>
       )}
@@ -158,14 +182,22 @@ export async function PageHead({
 }) {
   const variant = reachedTone(tone) as ButtonVariant;
   return (
-    <section className={toneClass[tone]}>
+    <section data-hero="" className={toneClass[tone]}>
       <div className="shell pt-8 pb-10 md:pt-10 md:pb-16">
-        <Breadcrumbs items={crumbs} />
-        <h1 className="hero-rise t-display mt-8 max-w-[70rem] md:mt-14">{title}</h1>
-        <div className="hero-rise mt-6 grid gap-6 md:mt-10 lg:grid-cols-12 lg:items-end" style={{ "--hero-delay": "120ms" } as React.CSSProperties}>
-          {intro && <p className="t-lead max-w-[46rem] lg:col-span-8">{intro}</p>}
+        <div data-hero-item="">
+          <Breadcrumbs items={crumbs} />
+        </div>
+        <h1 data-hero-title="" className="t-display mt-8 max-w-[70rem] md:mt-14">
+          <Words text={title} />
+        </h1>
+        <div className="mt-6 grid gap-6 md:mt-10 lg:grid-cols-12 lg:items-end">
+          {intro && (
+            <p data-hero-item="" className="t-lead max-w-[46rem] lg:col-span-8">
+              {intro}
+            </p>
+          )}
           {action && (
-            <div className="lg:col-span-4 lg:flex lg:justify-end">
+            <div data-hero-item="" className="lg:col-span-4 lg:flex lg:justify-end">
               {action.anchor ? <AnchorButton variant={variant}>{action.label}</AnchorButton> : <ButtonLink href={action.href ?? "/contact"} variant={variant}>{action.label}</ButtonLink>}
             </div>
           )}
@@ -181,8 +213,8 @@ export function SectionHead({ title, intro, children }: { title: string; intro?:
     <div>
       <span data-rule="" className="rule" aria-hidden="true" />
       <div className="mt-5 grid gap-4 lg:grid-cols-12 lg:gap-8">
-        <h2 className="t-title lg:col-span-7" {...rise()}>
-          {title}
+        <h2 data-split="" className="t-title lg:col-span-7">
+          <Words text={title} />
         </h2>
         {(intro || children) && (
           <div className="lg:col-span-4 lg:col-start-9" {...rise(1)}>
@@ -245,7 +277,7 @@ export function Rows({ items }: { items: { title: string; body: string }[] }) {
   return (
     <ul>
       {items.map((item) => (
-        <li key={item.title} className="grid gap-1 border-t-2 border-current py-4 md:grid-cols-12 md:gap-6 md:py-6" {...rise()}>
+        <li key={item.title} className="grid gap-1 border-t-2 border-current py-4 md:grid-cols-12 md:gap-6 md:py-6" data-rise="side">
           <h3 className="t-sub md:col-span-5">{item.title}</h3>
           <p className="md:col-span-7">{item.body}</p>
         </li>
@@ -258,9 +290,15 @@ export function CtaBand({ title, body, href, label, tone = "forest" }: { title: 
   return (
     <section className={`py-12 md:py-20 ${toneClass[tone]}`}>
       <div className="shell grid gap-6 lg:grid-cols-12 lg:items-end">
-        <div className="lg:col-span-8" {...rise()}>
-          <h2 className="t-title">{title}</h2>
-          {body && <p className="t-lead mt-3 max-w-[44rem]">{body}</p>}
+        <div className="lg:col-span-8">
+          <h2 data-split="" className="t-title">
+            <Words text={title} />
+          </h2>
+          {body && (
+            <p className="t-lead mt-3 max-w-[44rem]" {...rise()}>
+              {body}
+            </p>
+          )}
         </div>
         <div className="lg:col-span-4 lg:flex lg:justify-end" {...rise(1)}>
           <ButtonLink href={href} variant={reachedTone(tone) as ButtonVariant}>
@@ -279,10 +317,16 @@ export async function InquirySection({ intent, title, aside, tone = "sand" }: { 
     <section id="inquiry" className={`chapter ${toneClass[tone]}`}>
       <div className="shell grid gap-8 lg:grid-cols-12">
         <div className="lg:col-span-4">
-          <h2 className="t-title">{title}</h2>
-          {aside && <div className="mt-6">{aside}</div>}
+          <h2 data-split="" className="t-title">
+            <Words text={title} />
+          </h2>
+          {aside && (
+            <div className="mt-6" {...rise()}>
+              {aside}
+            </div>
+          )}
         </div>
-        <div className="lg:col-span-7 lg:col-start-6">
+        <div className="lg:col-span-7 lg:col-start-6" {...rise(1)}>
           <ContactForm locale={locale} labels={dict.contact} initialIntent={intent} fixed />
         </div>
       </div>
@@ -299,7 +343,7 @@ export async function RelatedServices({ keys }: { keys: ServiceKey[] }) {
         <SectionHead title={dict.common.related} />
         <ul className="mt-6">
           {keys.map((k) => (
-            <li key={k} className="border-t-2 border-current first:border-t-0" {...rise()}>
+            <li key={k} className="border-t-2 border-current first:border-t-0" data-rise="side">
               <LocaleLink href={serviceHref(k)} className="arrow-nudge flex items-center justify-between gap-6 py-5">
                 <span>
                   <span className="t-sub block">{dict.services.items[k].name}</span>

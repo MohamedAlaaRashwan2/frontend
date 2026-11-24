@@ -24,7 +24,7 @@ export default async function ProduceHandlingPage() {
           { label: dict.services.items.produce.name, href: serviceHref("produce") },
         ]}
       />
-      <Photo id="greensHarvest" priority sizes="100vw" position="50% 30%" className="aspect-[16/10] md:aspect-[21/8]" />
+      <Photo id="greensHarvest" priority parallax={6} sizes="100vw" position="50% 30%" className="aspect-[16/10] md:aspect-[21/8]" />
       <Section title={t.stepsTitle} intro={t.note}>
         <Steps columns={3} items={t.steps} />
       </Section>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Words } from "@/components/motion/Words";
 import { ChainScroll } from "@/components/ChainScroll";
 import { ExportRoutes } from "@/components/ExportRoutes";
 import { HeroStage } from "@/components/HeroStage";
@@ -27,22 +28,22 @@ export default async function Home() {
       {/* 1. What KHAIRAT is, and the facts behind it. */}
       <HeroStage image={{ src: images.greensRows.src, alt: images.greensRows[locale], position: "50% 75%" }}>
         <div className="max-w-[60rem] pb-8 lg:pb-12">
-          <h1 className="hero-rise t-display" style={{ "--hero-delay": "80ms" } as React.CSSProperties}>
-            {t.heroTitle}
+          <h1 data-hero-title="" className="t-display">
+            <Words text={t.heroTitle} />
           </h1>
-          <p className="hero-rise t-lead mt-5 max-w-[38rem]" style={{ "--hero-delay": "180ms" } as React.CSSProperties}>
+          <p data-hero-item="" className="t-lead mt-5 max-w-[38rem]">
             {t.heroBody}
           </p>
-          <div className="hero-rise mt-7 flex flex-col gap-2 sm:flex-row sm:flex-wrap" style={{ "--hero-delay": "280ms" } as React.CSSProperties}>
+          <div data-hero-item="" className="mt-7 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             <ButtonLink href="/services">{dict.common.exploreServices}</ButtonLink>
             <ButtonLink href="/contact" variant="outline-light">
               {dict.common.contactUs}
             </ButtonLink>
           </div>
         </div>
-        <dl className="hero-rise grid grid-cols-2 gap-x-6 gap-y-4 border-t-4 border-paper pt-4 lg:grid-cols-4" style={{ "--hero-delay": "380ms" } as React.CSSProperties}>
+        <dl className="grid grid-cols-2 gap-x-6 gap-y-4 border-t-4 border-paper pt-4 lg:grid-cols-4">
           {t.facts.map((fact) => (
-            <div key={fact.title}>
+            <div key={fact.title} data-hero-item="">
               <dt className="font-display leading-snug font-bold md:text-xl">{fact.title}</dt>
               <dd className="t-small mt-0.5">{fact.body}</dd>
             </div>
@@ -82,8 +83,8 @@ export default async function Home() {
           <div className="lg:col-span-5">
             <div className="lg:sticky lg:top-[calc(var(--header-height)+2rem)]">
               <span data-rule="" className="rule" aria-hidden="true" />
-              <h2 className="t-title mt-5" {...rise()}>
-                {dict.chain.title}
+              <h2 data-split="" className="t-title mt-5">
+                <Words text={dict.chain.title} />
               </h2>
               <p className="t-lead mt-4" {...rise(1)}>
                 {dict.chain.intro}
@@ -144,11 +145,11 @@ export default async function Home() {
       {/* 6. Facility and quality together: the physical proof. */}
       <section className="on-dark bg-forest text-paper">
         <div className="grid lg:grid-cols-2">
-          <Photo id="warehouse" sizes="(min-width: 1024px) 50vw, 100vw" className="aspect-[4/3] lg:aspect-auto lg:min-h-[44rem]" />
+          <Photo id="warehouse" parallax={5} sizes="(min-width: 1024px) 50vw, 100vw" className="aspect-[4/3] lg:aspect-auto lg:min-h-[44rem]" />
           <div className="px-[var(--page-gutter)] py-12 lg:py-20">
             <span data-rule="" className="rule" aria-hidden="true" />
-            <h2 className="t-title mt-5" {...rise()}>
-              {t.facilityTitle}
+            <h2 data-split="" className="t-title mt-5">
+              <Words text={t.facilityTitle} />
             </h2>
             <p className="t-lead mt-4 max-w-[36rem]" {...rise(1)}>
               {t.facilityBody}
@@ -172,8 +173,8 @@ export default async function Home() {
         <div className="shell">
           <SectionHead title={t.routesTitle} />
           <ul className="mt-6">
-            {t.routes.map((route, i) => (
-              <li key={route.intent} className="border-t-2 border-current first:border-t-0" {...rise(i)}>
+            {t.routes.map((route) => (
+              <li key={route.intent} className="border-t-2 border-current first:border-t-0" data-rise="side">
                 <LocaleLink href={contactHref(route.intent as InquiryIntent)} className="arrow-nudge flex items-center justify-between gap-6 py-4 md:py-5">
                   <span className="t-title !font-bold md:!text-[2.5rem]">{route.label}</span>
                   <Icon name="arrow" className="size-7 shrink-0" strokeWidth={2.25} />

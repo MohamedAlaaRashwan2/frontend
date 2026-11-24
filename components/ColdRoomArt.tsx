@@ -20,20 +20,20 @@ export function ColdRoomArt({ className = "" }: { className?: string }) {
             [0, 1].map((c) => (
               <g key={`${l}-${c}`}>
                 <rect x={x + c * 102} y={420 - l * 88 - 68} width="98" height="84" fill="#3b86d1" />
-                <rect x={x + c * 102 + 42} y={420 - l * 88 - 68} width="14" height="84" fill="#0c548f" />
+                <rect x={x + c * 102 + 42} y={420 - l * 88 - 68} width="14" height="84" fill="#0b5694" />
               </g>
             )),
           )}
-          <rect x={x - 4} y="436" width="208" height="12" fill="#083d6b" />
+          <rect x={x - 4} y="436" width="208" height="12" fill="#083f6d" />
           {[0, 90, 180].map((o) => (
-            <rect key={o} x={x - 4 + o} y="448" width="28" height="22" fill="#083d6b" />
+            <rect key={o} x={x - 4 + o} y="448" width="28" height="22" fill="#083f6d" />
           ))}
         </g>
       ))}
       {strips.map((i) => (
         <rect key={i} x={i * 90 - 5} y="0" width="82" height="600" fill="#ffffff" opacity={i % 2 ? 0.3 : 0.2} />
       ))}
-      <rect width="800" height="26" fill="#083d6b" />
+      <rect width="800" height="26" fill="#083f6d" />
     </svg>
   );
 }

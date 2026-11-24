@@ -1,13 +1,10 @@
 import Image from "next/image";
 
-export function Logo({ name, tagline }: { name: string; tagline: string }) {
-  return (
-    <span className="inline-flex items-center gap-2.5">
-      <Image src="/images/logo-khairat-flat.png" alt="" width={48} height={48} className="size-12 shrink-0" />
-      <span className="leading-none">
-        <span className="block font-display text-[1.3rem] font-extrabold tracking-tight text-ink rtl:font-bold rtl:tracking-normal">{name}</span>
-        <span className="mt-1 block text-[0.875rem] leading-tight text-ink/75">{tagline}</span>
-      </span>
-    </span>
-  );
+/**
+ * The El Kheirat lockup: the mark with the Arabic and Latin names inside the copper outline. The name is part of the
+ * artwork, so it is the image's alt text (and the header link's accessible name). Made for light backgrounds only;
+ * its green lettering disappears on the dark brand greens.
+ */
+export function Logo({ name }: { name: string }) {
+  return <Image src="/images/logo-elkheirat.png" alt={name} width={560} height={210} priority className="h-11 w-auto shrink-0 sm:h-12" />;
 }

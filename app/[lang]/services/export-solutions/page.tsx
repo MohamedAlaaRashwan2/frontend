@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Words } from "@/components/motion/Words";
 import { ExportRoutes } from "@/components/ExportRoutes";
 import { InquirySection, PageHead, Photo, RelatedServices, rise, RuledList, Section } from "@/components/ui";
 import { serviceHref } from "@/lib/content";
@@ -27,7 +28,7 @@ export default async function ExportSolutionsPage() {
           { label: dict.services.items.export.name, href: serviceHref("export") },
         ]}
       />
-      <Photo id="vessel" priority sizes="100vw" position="50% 60%" className="aspect-[16/10] md:aspect-[21/8]" />
+      <Photo id="vessel" priority parallax={6} sizes="100vw" position="50% 60%" className="aspect-[16/10] md:aspect-[21/8]" />
       <Section title={dict.markets.label} intro={t.coverTitle}>
         <ExportRoutes />
         <div className="mt-10">
@@ -36,8 +37,8 @@ export default async function ExportSolutionsPage() {
       </Section>
       <section className="grid lg:grid-cols-2">
         <div className="on-dark bg-forest px-[var(--page-gutter)] py-12 text-paper lg:py-20">
-          <h2 className="t-title" {...rise()}>
-            {t.importersTitle}
+          <h2 data-split="" className="t-title">
+            <Words text={t.importersTitle} />
           </h2>
           <ul className="mt-6">
             {t.importers.map((item) => (
@@ -48,8 +49,8 @@ export default async function ExportSolutionsPage() {
           </ul>
         </div>
         <div className="bg-sand px-[var(--page-gutter)] py-12 lg:py-20">
-          <h2 className="t-title" {...rise()}>
-            {t.exportersTitle}
+          <h2 data-split="" className="t-title">
+            <Words text={t.exportersTitle} />
           </h2>
           <ul className="mt-6">
             {t.exporters.map((item) => (

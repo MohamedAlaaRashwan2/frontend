@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Words } from "@/components/motion/Words";
 import { Icon } from "@/components/Icon";
 import { CtaBand, PageHead, Photo, Rows, Section } from "@/components/ui";
 import { contactHref } from "@/lib/content";
@@ -23,7 +24,9 @@ export default async function FacilityPage() {
       <PageHead title={t.title} intro={t.intro} crumbs={[{ label: dict.nav.facility, href: "/facility" }]} />
       <section className="bg-amber py-8 text-ink md:py-12">
         <div className="shell flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <p className="t-title">{dict.brand.address}</p>
+          <p data-split="" className="t-title">
+            <Words text={dict.brand.address} />
+          </p>
           <a
             href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`}
             target="_blank"
@@ -35,7 +38,7 @@ export default async function FacilityPage() {
           </a>
         </div>
       </section>
-      <Photo id="warehouse" sizes="100vw" className="aspect-[16/10] md:aspect-[21/8]" />
+      <Photo id="warehouse" reveal="wide" parallax={6} sizes="100vw" className="aspect-[16/10] md:aspect-[21/8]" />
       <Section title={t.zonesTitle}>
         <Rows items={t.zones} />
       </Section>

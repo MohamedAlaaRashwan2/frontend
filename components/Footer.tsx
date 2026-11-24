@@ -2,6 +2,7 @@ import { serviceHref, serviceKeys } from "@/lib/content";
 import { getDictionary } from "@/lib/i18n/server";
 import { navItems, site } from "@/lib/site";
 import { Icon } from "./Icon";
+import { Words } from "./motion/Words";
 import { LocaleLink } from "./ui";
 
 export async function Footer() {
@@ -11,10 +12,12 @@ export async function Footer() {
   return (
     <footer className="on-dark bg-ink text-paper">
       <div className="shell pt-12 pb-6 md:pt-16">
-        <p className="t-title" aria-hidden="true">
-          {dict.brand.name}
+        <p data-split="" className="t-title" aria-hidden="true">
+          <Words text={dict.brand.name} />
         </p>
-        <p className="t-lead mt-3 max-w-text">{dict.footer.statement}</p>
+        <p className="t-lead mt-3 max-w-text" data-rise="">
+          {dict.footer.statement}
+        </p>
 
         <div className="mt-10 grid gap-10 border-t-2 border-paper/30 pt-8 lg:grid-cols-12">
           <div className="lg:col-span-4">

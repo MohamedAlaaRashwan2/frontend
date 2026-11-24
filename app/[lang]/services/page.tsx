@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Words } from "@/components/motion/Words";
 import { ChainScroll } from "@/components/ChainScroll";
 import { ServiceIndex } from "@/components/ServiceIndex";
 import { CtaBand, PageHead, rise } from "@/components/ui";
@@ -40,8 +41,8 @@ export default async function ServicesPage() {
         <div className="shell grid gap-8 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <div className="lg:sticky lg:top-[calc(var(--header-height)+2rem)]">
-              <h2 className="t-title" {...rise()}>
-                {dict.chain.title}
+              <h2 data-split="" className="t-title">
+                <Words text={dict.chain.title} />
               </h2>
               <p className="t-lead mt-4" {...rise(1)}>
                 {dict.chain.note}

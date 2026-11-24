@@ -39,7 +39,7 @@ export function organizationJsonLd(locale: Locale) {
     "@type": "Organization",
     name: dict.brand.name,
     url: `${siteUrl()}${localizePath("/", locale)}`,
-    logo: `${siteUrl()}/images/logo-khairat-flat.png`,
+    logo: `${siteUrl()}/images/logo-elkheirat-mark.png`,
     description: dict.brand.description,
     address: {
       "@type": "PostalAddress",

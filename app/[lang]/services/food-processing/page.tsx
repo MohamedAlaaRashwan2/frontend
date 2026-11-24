@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { InquirySection, PageHead, Photo, RelatedServices, rise } from "@/components/ui";
+import { Words } from "@/components/motion/Words";
+import { InquirySection, PageHead, Photo, RelatedServices } from "@/components/ui";
 import { serviceHref } from "@/lib/content";
 import { getDictionary, getLocale } from "@/lib/i18n/server";
 import { pageMetadata } from "@/lib/seo";
@@ -32,12 +33,12 @@ export default async function FoodProcessingPage() {
           <Photo id="sortingFruit" sizes="(min-width: 1024px) 50vw, 100vw" className="aspect-[16/10] lg:aspect-auto lg:h-full" />
         </div>
         <div className="px-[var(--page-gutter)] py-10 lg:py-16">
-          <h2 className="t-title" {...rise()}>
-            {t.stepsTitle}
+          <h2 data-split="" className="t-title">
+            <Words text={t.stepsTitle} />
           </h2>
           <ol className="mt-6">
             {t.steps.map((step, i) => (
-              <li key={step} className="flex items-baseline gap-4 border-t-2 border-current py-3 md:py-4" {...rise()}>
+              <li key={step} className="flex items-baseline gap-4 border-t-2 border-current py-3 md:py-4" data-rise="side">
                 <span className="t-small font-bold">{(i + 1).toLocaleString(locale === "ar" ? "ar-EG" : "en-US", { minimumIntegerDigits: 2, useGrouping: false })}</span>
                 <span className="t-sub">{step}</span>
               </li>

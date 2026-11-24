@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Words } from "@/components/motion/Words";
 import { CtaBand, PageHead, Photo, rise, Rows, Section, Steps } from "@/components/ui";
 import { getDictionary, getLocale } from "@/lib/i18n/server";
 import { pageMetadata } from "@/lib/seo";
@@ -17,14 +18,14 @@ export default async function AboutPage() {
   return (
     <>
       <PageHead tone="forest" title={t.title} intro={t.intro} crumbs={[{ label: dict.nav.about, href: "/about" }]} />
-      <Photo id="wheatSunset" priority sizes="100vw" className="aspect-[16/10] md:aspect-[21/8]" />
+      <Photo id="wheatSunset" priority parallax={6} sizes="100vw" className="aspect-[16/10] md:aspect-[21/8]" />
       <section className="chapter bg-amber text-ink">
         <div className="shell">
           <h2 className="t-sub" {...rise()}>
             {t.positionTitle}
           </h2>
-          <p className="t-title mt-3 max-w-[70rem]" {...rise(1)}>
-            {t.position}
+          <p data-read="" className="t-title mt-3 max-w-[70rem]">
+            <Words text={t.position} />
           </p>
         </div>
       </section>

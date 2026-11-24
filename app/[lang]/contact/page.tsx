@@ -34,7 +34,7 @@ export default async function ContactPage({ searchParams }: PageProps<"/[lang]/c
       <PageHead title={t.title} intro={t.intro} crumbs={[{ label: dict.nav.contact, href: "/contact" }]} />
       <section id="inquiry" className="chapter bg-sand">
         <div className="shell grid gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-8" data-rise="">
             <ContactForm locale={locale} labels={t} initialIntent={intent} initialProduct={productValue} />
           </div>
           <aside className="lg:col-span-3 lg:col-start-10">
@@ -43,7 +43,7 @@ export default async function ContactPage({ searchParams }: PageProps<"/[lang]/c
               {channels.map((c) => {
                 const value = c.ltr ? <bdi dir="ltr">{c.value}</bdi> : c.value;
                 return (
-                  <li key={c.label} className="flex gap-3 border-t-2 border-current pt-3">
+                  <li key={c.label} className="flex gap-3 border-t-2 border-current pt-3" data-rise="side">
                     <Icon name={c.icon} className="mt-1 size-5 shrink-0" />
                     <div className="min-w-0">
                       <p className="font-bold">{c.label}</p>

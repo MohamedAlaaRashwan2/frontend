@@ -1,12 +1,11 @@
 "use client";
 
 import { useLenis } from "lenis/react";
-import { AnimatePresence } from "motion/react";
-import * as m from "motion/react-m";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { localeNames, localizePath, switchLocalePath, type Locale } from "@/lib/i18n/config";
+import { DUR, EASE, gsap, MQ, ScrollTrigger, useGSAP } from "@/lib/motion/gsap";
 import { navItems } from "@/lib/site";
 import { Icon } from "./Icon";
 import { Logo } from "./Logo";
@@ -26,7 +25,16 @@ export function Header({ locale, labels, brand, solutions }: Props) {
   const menuButton = useRef<HTMLButtonElement>(null);
   const solutionsButton = useRef<HTMLButtonElement>(null);
   const solutionsWrap = useRef<HTMLLIElement>(null);
+  const solutionsMenu = useRef<HTMLDivElement>(null);
+  const mobileMenu = useRef<HTMLDivElement>(null);
+  const bar = useRef<HTMLElement>(null);
+  const progress = useRef<HTMLSpanElement>(null);
   const lenis = useLenis();
+  // Read inside scroll callbacks, which are created once.
+  const openRef = useRef(false);
+  useEffect(() => {
+    openRef.current = menuOpen || solutionsOpen;
+  }, [menuOpen, solutionsOpen]);
 
   // Close everything after navigating. Adjusting state during render is React's pattern for this,
   // and avoids a flash of the old menu on the new page.
@@ -71,6 +79,86 @@ export function Header({ locale, labels, brand, solutions }: Props) {
     };
   }, [menuOpen, solutionsOpen]);
 
+  // ── Motion ──
+  // The header steps out of the way while reading down the page and comes back as soon as you scroll up, reach the
+  // top, or tab into it. A thin bar along its edge shows how far through the page you are.
+  useGSAP(
+    () => {
+      const header = bar.current;
+      if (!header) return;
+      const setProgress = gsap.quickSetter(progress.current, "scaleX");
+      const mm = gsap.matchMedia();
+
+      ScrollTrigger.create({
+        start: 0,
+        end: "max",
+        onUpdate: (self) => {
+          setProgress(self.progress);
+          header.toggleAttribute("data-scrolled", self.scroll() > 8);
+        },
+      });
+
+      mm.add(MQ.motion, () => {
+        let hidden = false;
+        const show = (visible: boolean) => {
+          if (hidden === !visible) return;
+          hidden = !visible;
+          gsap.to(header, { yPercent: visible ? 0 : -100, duration: visible ? 0.45 : 0.35, ease: visible ? EASE.brand : EASE.exit, overwrite: true });
+        };
+        ScrollTrigger.create({
+          start: 0,
+          end: "max",
+          onUpdate: (self) => {
+            // Keyboard focus keeps it in view; focus left behind by a mouse click doesn't.
+            if (openRef.current || header.querySelector(":focus-visible")) return show(true);
+            show(self.direction === -1 || self.scroll() < 240);
+          },
+        });
+        const onFocus = () => show(true);
+        header.addEventListener("focusin", onFocus);
+        return () => header.removeEventListener("focusin", onFocus);
+      });
+    },
+    { scope: bar },
+  );
+
+  // The services dropdown: unfolds from under its button, its items following.
+  useGSAP(
+    () => {
+      const menu = solutionsMenu.current;
+      if (!menu) return;
+      if (solutionsOpen) {
+        gsap.set(menu, { display: "block" });
+        gsap.fromTo(menu, { autoAlpha: 0, y: -8 }, { autoAlpha: 1, y: 0, duration: DUR.fast, ease: EASE.brand, overwrite: true });
+        gsap.fromTo(menu.querySelectorAll("[data-menu-item]"), { autoAlpha: 0, y: 6 }, { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.03, delay: 0.04, ease: EASE.brand, overwrite: true });
+      } else if (menu.style.display === "block") {
+        gsap.to(menu, { autoAlpha: 0, y: -4, duration: 0.15, ease: EASE.exit, overwrite: true, onComplete: () => void gsap.set(menu, { display: "none" }) });
+      }
+    },
+    { dependencies: [solutionsOpen] },
+  );
+
+  // The mobile menu: a panel unrolls from the header, then the links rise in order.
+  useGSAP(
+    () => {
+      const menu = mobileMenu.current;
+      if (!menu) return;
+      const reduce = window.matchMedia(MQ.reduce).matches;
+      if (menuOpen) {
+        gsap.set(menu, { display: "block" });
+        if (reduce) {
+          gsap.set(menu, { autoAlpha: 1, clearProps: "clipPath" });
+          return;
+        }
+        gsap.fromTo(menu, { autoAlpha: 1, clipPath: "inset(0% 0% 100% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.55, ease: EASE.reveal, overwrite: true });
+        gsap.fromTo(menu.querySelectorAll("[data-menu-item]"), { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.035, delay: 0.12, ease: EASE.brand, overwrite: true });
+      } else if (menu.style.display === "block") {
+        gsap.to(menu, { autoAlpha: 0, duration: reduce ? 0 : 0.18, ease: EASE.exit, overwrite: true, onComplete: () => void gsap.set(menu, { display: "none", clearProps: "clipPath" }) });
+      }
+    },
+    { dependencies: [menuOpen] },
+  );
+
   const to = (path: string) => localizePath(path, locale);
   const home = to("/");
   const isActive = (path: string) => {
@@ -93,10 +181,14 @@ export function Header({ locale, labels, brand, solutions }: Props) {
     `nav-link inline-flex min-h-11 items-center gap-1 px-3 font-semibold whitespace-nowrap ${active ? "nav-link-active" : ""}`;
 
   return (
-    <header className={`${menuOpen ? "fixed inset-x-0 top-0 z-50" : "sticky top-0 z-50"} w-full bg-paper text-ink`}>
+    <header
+      ref={bar}
+      className={`header-bar ${menuOpen ? "fixed inset-x-0 top-0 z-50" : "sticky top-0 z-50"} w-full bg-paper text-ink data-[scrolled]:shadow-[0_1px_0_rgb(21_26_23/0.12)]`}
+    >
+      <span ref={progress} className="scroll-progress pointer-events-none absolute inset-x-0 bottom-0 h-[3px] bg-copper" aria-hidden="true" />
       <div className="shell flex h-[var(--header-height)] items-center justify-between gap-3">
         <Link href={home} className="shrink-0">
-          <Logo name={brand.name} tagline={brand.tagline} />
+          <Logo name={brand.name} />
         </Link>
 
         <nav aria-label={labels.main} className="hidden xl:block">
@@ -115,18 +207,11 @@ export function Header({ locale, labels, brand, solutions }: Props) {
                     {labels.services}
                     <Icon name="chevron" className={`size-4 transition-transform duration-200 ${solutionsOpen ? "rotate-180" : ""}`} strokeWidth={2.25} />
                   </button>
-                  <AnimatePresence>
-                  {solutionsOpen && (
-                    <m.div
-                      id="solutions-menu"
-                      initial={{ opacity: 0, y: -6 }}
-                      animate={{ opacity: 1, y: 0, transition: { duration: 0.18, ease: [0.23, 1, 0.32, 1] } }}
-                      exit={{ opacity: 0, transition: { duration: 0.1 } }}
-                      className="absolute start-0 top-[calc(100%+0.8rem)] w-[34rem] bg-paper p-2 shadow-float"
-                    >
+                  {/* Always in the DOM so it can animate out; display:none keeps it out of the tab order while closed. */}
+                  <div ref={solutionsMenu} id="solutions-menu" style={{ display: "none" }} className="absolute start-0 top-[calc(100%+0.8rem)] w-[34rem] bg-paper p-2 shadow-float">
                       <ul>
                         {solutions.map((s) => (
-                          <li key={s.href}>
+                          <li key={s.href} data-menu-item="">
                             <Link
                               href={to(s.href)}
                               onClick={() => setSolutionsOpen(false)}
@@ -139,12 +224,10 @@ export function Header({ locale, labels, brand, solutions }: Props) {
                           </li>
                         ))}
                       </ul>
-                      <Link href={to("/services")} onClick={() => setSolutionsOpen(false)} className="block bg-sand p-3 font-bold transition-colors duration-150 hover:bg-sand-deep">
+                      <Link data-menu-item="" href={to("/services")} onClick={() => setSolutionsOpen(false)} className="block bg-sand p-3 font-bold transition-colors duration-150 hover:bg-sand-deep">
                         {labels.allServices}
                       </Link>
-                    </m.div>
-                  )}
-                  </AnimatePresence>
+                  </div>
                 </li>
               ) : (
                 <li key={item.key}>
@@ -185,21 +268,20 @@ export function Header({ locale, labels, brand, solutions }: Props) {
         </div>
       </div>
 
-      <AnimatePresence>
-      {menuOpen && (
-        <m.div
-          id="mobile-menu"
-          data-lenis-prevent
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0, transition: { duration: 0.24, ease: [0.23, 1, 0.32, 1] } }}
-          exit={{ opacity: 0, transition: { duration: 0.12 } }}
-          className="h-[calc(100dvh-var(--header-height))] fixed w-full overflow-y-auto bg-forest text-paper on-dark xl:hidden"
-        >
+      {/* Always in the DOM so it can animate out; display:none keeps it out of the tab order while closed. */}
+      <div
+        ref={mobileMenu}
+        id="mobile-menu"
+        data-lenis-prevent
+        style={{ display: "none" }}
+        className="h-[calc(100dvh-var(--header-height))] fixed w-full overflow-y-auto bg-forest text-paper on-dark xl:hidden"
+      >
           <nav aria-label={labels.main} className="shell pt-4 pb-10">
             <ul>
               {navItems.map((item) => (
                 <li key={item.key}>
                   <Link
+                    data-menu-item=""
                     href={to(item.href)}
                     onClick={() => setMenuOpen(false)}
                     aria-current={isActive(item.href) ? "page" : undefined}
@@ -212,6 +294,7 @@ export function Header({ locale, labels, brand, solutions }: Props) {
                       {solutions.map((s) => (
                         <li key={s.href}>
                           <Link
+                            data-menu-item=""
                             href={to(s.href)}
                             onClick={() => setMenuOpen(false)}
                             aria-current={pathname === to(s.href) ? "page" : undefined}
@@ -227,9 +310,7 @@ export function Header({ locale, labels, brand, solutions }: Props) {
               ))}
             </ul>
           </nav>
-        </m.div>
-      )}
-      </AnimatePresence>
+      </div>
     </header>
   );
 }

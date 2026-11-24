@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Words } from "@/components/motion/Words";
 import { ButtonLink, PageHead, Photo, rise, Rows, Section, SectionHead } from "@/components/ui";
 import { contactHref } from "@/lib/content";
 import { getDictionary, getLocale } from "@/lib/i18n/server";
@@ -22,12 +23,12 @@ export default async function QualityPage() {
       <Section title={t.pointsTitle}>
         <Rows items={t.points} />
       </Section>
-      <Photo id="packingHands" sizes="100vw" className="aspect-[16/9] md:aspect-[3/1]" />
+      <Photo id="packingHands" reveal="wide" parallax={6} sizes="100vw" className="aspect-[16/9] md:aspect-[3/1]" />
       <section id="certificates" className="chapter on-dark bg-charcoal text-paper">
         <div className="shell">
           <SectionHead title={t.certsTitle} />
-          <p className="t-title mt-6 max-w-[70rem] !font-semibold md:!text-[2.5rem]" {...rise()}>
-            {t.certsBody}
+          <p data-read="" className="t-title mt-6 max-w-[70rem] !font-semibold md:!text-[2.5rem]">
+            <Words text={t.certsBody} />
           </p>
           <div className="mt-8 grid gap-6 lg:grid-cols-12 lg:items-end" {...rise(1)}>
             <p className="t-lead lg:col-span-8">{t.certsNote}</p>

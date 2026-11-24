@@ -43,4 +43,4 @@ Listed as CC0 (public domain) on the source pages.
 
 ## Own artwork
 
-`logo-khairat-flat.png` (current) and `logo-khairat-gold.png` (gold variant) belong to the company. `og-en.jpg` and `og-ar.jpg` were composed from the logo, `greens-rows.jpg` and `port.jpg`.
+`logo-elkheirat.png` (full lockup) and `logo-elkheirat-mark.png` (the round mark alone, for icons and search results) belong to the company. `logo-khairat-flat.png` and `logo-khairat-gold.png` are earlier versions, no longer used. `og-en.jpg` and `og-ar.jpg` were composed from the logo, `greens-rows.jpg` and `port.jpg`.

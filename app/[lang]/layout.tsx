@@ -3,7 +3,7 @@ import { Alexandria, IBM_Plex_Sans_Arabic, Manrope } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { MotionProvider } from "@/components/MotionProvider";
-import { motionScript, RevealObserver } from "@/components/Reveal";
+import { MotionDirector, motionScript } from "@/components/motion/MotionDirector";
 import { JsonLd } from "@/components/ui";
 import { serviceHref, serviceKeys } from "@/lib/content";
 import { dirOf, locales } from "@/lib/i18n/config";
@@ -61,7 +61,7 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
           </main>
           <Footer />
         </MotionProvider>
-        <RevealObserver />
+        <MotionDirector />
         <JsonLd data={organizationJsonLd(locale)} />
       </body>
     </html>

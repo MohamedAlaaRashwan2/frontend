@@ -2,23 +2,25 @@
 
 /*
  * KHAIRAT design tokens. Direction: industrial and confident.
- * Colours come from the flat logo: green (forest), orange (the `amber` token, used like a signal colour) and blue (cold).
- * Blue is reserved for cold-chain content. Heavy type, square corners, thick rules, no shadows at rest.
- * Gold-logo palette, for switching back: forest #0c3b22, forest-deep #072816, leaf #00602a, amber #d6a454,
- * cold #0a3f8f, cold-deep #032c69, cold-bright #3a7fd6 (logo file: /images/logo-khairat-gold.png).
+ * Colours come from the El Kheirat logo: its green (forest, leaf), its gold (the `amber` token, used like a signal
+ * colour), its blue (cold), and the copper of its outline (thin accents on light backgrounds, where gold is too pale).
+ * Earth is the brown of its leaf, kept for illustration. Blue is reserved for cold-chain content.
+ * Heavy type, square corners, thick rules, no shadows at rest.
  */
 @theme {
   --color-forest: #0b3a26;
   --color-forest-deep: #06281a;
-  --color-leaf: #105235;
+  --color-leaf: #0d5436;
   --color-paper: #f7f4ed;
   --color-sand: #e9e2d3;
   --color-sand-deep: #dcd3bf;
   --color-ink: #151a17;
   --color-charcoal: #1d2320;
-  --color-amber: #e67a24;
-  --color-cold: #0c548f;
-  --color-cold-deep: #083d6b;
+  --color-amber: #f0b531;
+  --color-copper: #be7d3c;
+  --color-earth: #805437;
+  --color-cold: #0b5694;
+  --color-cold-deep: #083f6d;
   --color-cold-bright: #3b86d1;
   --color-error: #a3261b;
 
@@ -39,23 +41,23 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #105235;
+  background: var(--color-leaf);
   border-radius: 0px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #0b3a26;
+  background: var(--color-forest);
   border-radius: 0px;
-  border: 1px solid #06281a;
+  border: 1px solid var(--color-forest-deep);
   transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #e67a24;
+  background: var(--color-amber);
 }
 
 ::-webkit-scrollbar-corner {
-  background: #241946;
+  background: var(--color-forest-deep);
 }
 
 :root {
@@ -207,7 +209,7 @@ html[lang="ar"] .t-lead {
   inset-inline: 0.75rem;
   bottom: 0.4rem;
   height: 2px;
-  background: var(--color-amber);
+  background: var(--color-copper);
   transform: scaleX(0);
   transform-origin: left;
 }
@@ -232,81 +234,119 @@ html[lang="ar"] .t-lead {
   color: var(--color-paper);
 }
 
+/* Words from <Words>: each word is one unit (never split further, so Arabic keeps its joins). */
+.w {
+  display: inline-block;
+}
+
+.wi {
+  display: inline-block;
+}
+
+/* Animated underline for text links: thick, drawn from the reading side, pulled back on hover. */
+.link-line {
+  background: linear-gradient(currentColor, currentColor) no-repeat left bottom / 100% 2px;
+  padding-bottom: 2px;
+}
+
+[dir="rtl"] .link-line {
+  background-position: right bottom;
+}
+
+/* Scroll progress, along the bottom edge of the header. */
+.scroll-progress {
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+[dir="rtl"] .scroll-progress {
+  transform-origin: right;
+}
+
 /*
  * ─── Motion ───
- * Considered, not constant: short, soft, transform and opacity only, no bounce and nothing looping.
- * Everything here is off for prefers-reduced-motion.
+ * GSAP (components/motion/MotionDirector.tsx) runs the entrances; this block only holds their starting states plus the
+ * small hover and press transitions that CSS does best. Every starting state:
+ *   - applies only under html.js (set before paint, dropped again if the animation layer never starts),
+ *   - applies only until the element is marked [data-risen], so it can never snap back after animating,
+ *   - is off entirely for prefers-reduced-motion, where content is simply there.
  */
 @media (prefers-reduced-motion: no-preference) {
-  /* Hidden state only applies once script is confirmed running, so content can never get stuck invisible. */
-  html.js [data-rise] {
+  html.js [data-rise]:not([data-risen]),
+  html.js [data-hero-item]:not([data-risen]) {
     opacity: 0;
-    transform: translateY(1.25rem);
+    transform: translateY(1.5rem);
   }
 
-  html.js [data-rise][data-risen] {
-    opacity: 1;
-    transform: none;
-    transition:
-      opacity 0.55s ease,
-      transform 0.75s var(--ease-out-strong);
-    transition-delay: calc(var(--rise-order, 0) * 60ms);
+  html.js [data-rise="side"]:not([data-risen]) {
+    transform: translateX(-2.5rem);
   }
 
-  /* Section rules draw in. */
-  html.js [data-rule] {
+  html[dir="rtl"].js [data-rise="side"]:not([data-risen]) {
+    transform: translateX(2.5rem);
+  }
+
+  /* Latin headings rise out of a mask, one word at a time. */
+  html.js [data-split] .w,
+  html.js [data-hero-title] .w {
+    overflow: clip;
+    /* Room for ascenders, descenders and overhanging glyphs, taken back with margins so spacing is unchanged. */
+    padding: 0.12em 0.08em;
+    margin: -0.12em -0.08em;
+  }
+
+  html.js [data-split]:not([data-risen]) .wi,
+  html.js [data-hero-title]:not([data-risen]) .wi {
+    transform: translateY(115%);
+  }
+
+  /* Arabic marks sit far above and below the line, so a mask would cut them: Arabic words fade up instead. */
+  html[lang="ar"].js [data-split] .w,
+  html[lang="ar"].js [data-hero-title] .w {
+    overflow: visible;
+  }
+
+  html[lang="ar"].js [data-split]:not([data-risen]) .wi,
+  html[lang="ar"].js [data-hero-title]:not([data-risen]) .wi {
+    opacity: 0;
+    transform: translateY(0.45em);
+  }
+
+  /* Statements brighten word by word as they are scrolled through. */
+  html.js [data-read] .wi {
+    opacity: 0.16;
+  }
+
+  html.js [data-rule]:not([data-risen]),
+  html.js [data-route]:not([data-risen]) {
     transform: scaleX(0);
   }
 
-  html.js [data-rule][data-risen] {
-    transform: none;
-    transition: transform 1s var(--ease-out-strong);
+  html.js [data-photo]:not([data-risen]) {
+    clip-path: inset(100% 0% 0% 0%);
   }
 
-  /* Export route lines draw from Egypt to the market. */
-  html.js [data-route] {
-    transform: scaleX(0);
+  html.js [data-photo]:not([data-risen]) img {
+    transform: scale(1.14);
   }
 
-  html.js [data-route][data-risen] {
-    transform: none;
-    transition: transform 1.2s var(--ease-out-strong);
-    transition-delay: calc(var(--rise-order, 0) * 140ms);
+  @media (min-width: 1024px) {
+    html.js [data-photo="wide"]:not([data-risen]) {
+      clip-path: inset(14% 10% 14% 10%);
+    }
   }
 
-  /* Photographs are uncovered from below and settle as they arrive. */
-  html.js [data-photo] {
-    clip-path: inset(0 0 14% 0);
+  html.js [data-hero-photo]:not([data-risen]) img {
+    transform: scale(1.08);
   }
 
-  html.js [data-photo] img {
-    opacity: 0;
-    transform: scale(1.05);
-  }
-
-  html.js [data-photo][data-risen] {
-    clip-path: inset(0);
-    transition: clip-path 0.9s var(--ease-out-strong);
-  }
-
-  html.js [data-photo][data-risen] img {
-    opacity: 1;
-    transform: none;
-    transition:
-      opacity 0.6s ease,
-      transform 1.3s var(--ease-out-strong);
+  /* The chain line fills with scroll (components/ChainScroll.tsx). */
+  html.js .chain-fill {
+    transform: scaleY(0);
   }
 
   .page-enter {
     animation: fade-in 0.26s ease-out both;
-  }
-
-  .hero-photo {
-    animation: hero-settle 1.8s var(--ease-out-strong) both;
-  }
-
-  .hero-rise {
-    animation: rise-in 0.8s var(--ease-out-strong) var(--hero-delay, 0ms) both;
   }
 
   .form-step {
@@ -322,8 +362,18 @@ html[lang="ar"] .t-lead {
     color: var(--color-paper);
   }
 
-  .service-photo {
-    transition: opacity 0.45s ease;
+  .chain-dot {
+    transition:
+      transform 0.5s var(--ease-out-strong),
+      background-color 0.3s ease;
+  }
+
+  html.js .chain-row:not([data-on="true"]) .chain-dot {
+    transform: scale(0.55);
+  }
+
+  .header-bar {
+    transition: box-shadow 0.3s ease;
   }
 
   .nav-link::after {
@@ -334,6 +384,10 @@ html[lang="ar"] .t-lead {
     transition: translate 0.2s var(--ease-out-strong);
   }
 
+  .link-line {
+    transition: background-size 0.35s var(--ease-out-strong);
+  }
+
   .press {
     transition:
       background-color 0.18s ease,
@@ -341,6 +395,7 @@ html[lang="ar"] .t-lead {
       transform 0.14s ease-out;
   }
 
+  /* Touch gets feedback through the press, not hover. */
   .press:active {
     transform: scale(0.98);
   }
@@ -351,9 +406,9 @@ html[lang="ar"] .t-lead {
 
   /* Touch screens would otherwise keep these "hovered" after a tap. */
   @media (hover: hover) and (pointer: fine) {
-    a:hover .zoom-frame img,
-    html.js a:hover .zoom-frame[data-photo][data-risen] img {
-      transform: scale(1.03);
+    a:hover .zoom-frame[data-risen] img,
+    a:hover .zoom-frame:not([data-photo]) img {
+      transform: scale(1.04);
     }
 
     .arrow-nudge:hover svg {
@@ -363,6 +418,11 @@ html[lang="ar"] .t-lead {
     [dir="rtl"] .arrow-nudge:hover svg {
       translate: -0.25rem 0;
     }
+
+    .link-line:hover {
+      background-size: 0% 2px;
+    }
+
   }
 
   .arrow-nudge:focus-visible svg {
@@ -389,15 +449,6 @@ html[lang="ar"] .t-lead {
     }
     to {
       opacity: 1;
-      transform: none;
-    }
-  }
-
-  @keyframes hero-settle {
-    from {
-      transform: scale(1.05);
-    }
-    to {
       transform: none;
     }
   }
