@@ -38,7 +38,7 @@ export default async function FacilityPage() {
           </a>
         </div>
       </section>
-      <Photo id="warehouse" reveal="wide" parallax={6} sizes="100vw" className="aspect-[16/10] md:aspect-[21/8]" />
+      <Photo bleed id="warehouse" reveal="wide" parallax={6} sizes="100vw" className="aspect-[16/10] md:aspect-[21/8]" />
       <Section title={t.zonesTitle}>
         <Rows items={t.zones} />
       </Section>

@@ -18,7 +18,9 @@ export const images = {
   vessel: { src: "/images/vessel.jpg", kind: "place", en: "Container vessel at sea", ar: "سفينة حاويات في عرض البحر" },
   harvest: { src: "/images/harvest.jpg", kind: "operations", en: "Field workers carrying crates of harvested produce", ar: "عمال في الحقل يحملون صناديق المحصول" },
   greensHarvest: { src: "/images/greens-harvest.jpg", kind: "operations", en: "A grower carrying a crate of freshly cut greens", ar: "مزارع يحمل صندوقًا من الخضراوات المقطوفة حديثًا" },
-  sortingFruit: { src: "/images/sorting-fruit.jpg", kind: "operations", en: "Fresh produce being received into a sorting line", ar: "استلام منتجات طازجة على خط الفرز" },
+  sortingFruit: { src: "/images/produce-line.jpg", kind: "operations", en: "Fresh citrus running along a grading and packing line", ar: "حمضيات طازجة على خط الفرز والتعبئة" },
+  processingLine: { src: "/images/processing-line.jpg", kind: "operations", en: "A worker in gloves and a hairnet preparing produce on a processing line", ar: "عاملة بقفازات وغطاء شعر تجهّز المنتجات على خط التصنيع" },
+  containerLoading: { src: "/images/container-loading.jpg", kind: "operations", en: "A forklift loading a shipping container onto a truck", ar: "رافعة شوكية تحمّل حاوية شحن على شاحنة" },
   packingHands: { src: "/images/packing-hands.jpg", kind: "operations", en: "Hands checking produce on a packing table", ar: "أيدٍ تفحص المنتج على طاولة التعبئة" },
   warehouse: { src: "/images/warehouse.jpg", kind: "operations", en: "Warehouse aisles stacked with packed goods", ar: "ممرات مستودع مرصوصة بالبضائع المعبأة" },
   mango: { src: "/images/mango.jpg", kind: "product", en: "A ripening mango on the tree", ar: "ثمرة مانجا تنضج على الشجرة" },
@@ -54,16 +56,27 @@ export type ServiceKey = keyof typeof serviceMeta;
 export const serviceKeys = Object.keys(serviceMeta) as ServiceKey[];
 export const serviceHref = (key: ServiceKey) => `/services/${serviceMeta[key].slug}`;
 
-/** Picture for each service. Cold storage has none on purpose: no honest photograph exists yet, so it is drawn. */
-export const serviceImage: Record<Exclude<ServiceKey, "coldStorage">, ImageId> = {
+/**
+ * Picture for each service, chosen to show what the service's title says. Two are drawn instead of photographed:
+ * cold storage (no honest photograph exists yet) and Private Label (stock packaging always shows someone else's brand).
+ */
+export const serviceArt = { coldStorage: "cold", privateLabel: "label" } as const satisfies Partial<Record<ServiceKey, string>>;
+export type ServiceArt = (typeof serviceArt)[keyof typeof serviceArt];
+
+export const serviceImage: Record<Exclude<ServiceKey, keyof typeof serviceArt>, ImageId> = {
   produce: "sortingFruit",
-  processing: "packingHands",
-  privateLabel: "pomegranates",
+  processing: "processingLine",
   export: "vessel",
-  container: "cranes",
+  container: "containerLoading",
   business: "warehouse",
   sourcing: "harvest",
 };
+
+/** The photograph or drawing that represents a service. */
+export function serviceVisual(key: ServiceKey): { image?: (typeof images)[ImageId]; art?: ServiceArt } {
+  if (key in serviceArt) return { art: serviceArt[key as keyof typeof serviceArt] };
+  return { image: images[serviceImage[key as keyof typeof serviceImage]] };
+}
 
 // ——— Products ———
 // TODO(company-confirm): management approves the final product list, plus form, season and packaging per product.

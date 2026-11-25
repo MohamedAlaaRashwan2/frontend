@@ -1,9 +1,9 @@
 // Locale settings shared by the proxy, server components and client components.
 
-export const locales = ["en", "ar"] as const;
+// Arabic is the site's primary language: listed first and used for every visitor who hasn't chosen otherwise.
+export const locales = ["ar", "en"] as const;
 export type Locale = (typeof locales)[number];
-export const defaultLocale: Locale = "en";
-export const LOCALE_COOKIE = "NEXT_LOCALE";
+export const defaultLocale: Locale = "ar";
 
 export const localeNames: Record<Locale, string> = { en: "English", ar: "العربية" };
 

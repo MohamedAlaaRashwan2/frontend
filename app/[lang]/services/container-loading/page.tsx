@@ -20,7 +20,7 @@ export default async function ContainerLoadingPage() {
     <>
       {/* The picture comes first here: this page is about the moment the goods leave. */}
       <section data-hero="">
-        <Photo id="cranes" priority parallax={6} sizes="100vw" position="50% 45%" className="aspect-[16/10] md:aspect-[21/8]" />
+        <Photo bleed id="cranes" priority parallax={6} sizes="100vw" position="50% 45%" className="aspect-[16/10] md:aspect-[21/8]" />
         <div className="shell py-8 md:py-12">
           <div data-hero-item="">
             <Breadcrumbs

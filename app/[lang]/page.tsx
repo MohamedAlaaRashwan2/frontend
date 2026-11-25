@@ -6,7 +6,7 @@ import { HeroStage } from "@/components/HeroStage";
 import { Icon } from "@/components/Icon";
 import { ServiceIndex } from "@/components/ServiceIndex";
 import { ArrowLink, ButtonLink, LocaleLink, Photo, rise, Section, SectionHead, Steps, RuledList } from "@/components/ui";
-import { contactHref, images, productMeta, serviceHref, serviceImage, serviceKeys } from "@/lib/content";
+import { contactHref, images, productMeta, serviceHref, serviceKeys, serviceVisual } from "@/lib/content";
 import { localizePath } from "@/lib/i18n/config";
 import { getDictionary, getLocale } from "@/lib/i18n/server";
 import type { InquiryIntent } from "@/lib/inquiry";
@@ -103,13 +103,14 @@ export default async function Home() {
         <ServiceIndex
           illustrative={dict.common.illustrative}
           rows={serviceKeys.map((key) => {
-            const image = key === "coldStorage" ? undefined : images[serviceImage[key]];
+            const { image, art } = serviceVisual(key);
             return {
               key,
               href: localizePath(serviceHref(key), locale),
               name: dict.services.items[key].name,
               short: dict.services.items[key].short,
               image: image && { src: image.src, alt: image[locale], illustrative: image.kind === "operations" },
+                art,
             };
           })}
         />
@@ -143,7 +144,7 @@ export default async function Home() {
       {/* 6. Facility and quality together: the physical proof. */}
       <section className="on-dark bg-forest text-paper">
         <div className="grid lg:grid-cols-2">
-          <Photo id="warehouse" parallax={5} sizes="(min-width: 1024px) 50vw, 100vw" className="aspect-[4/3] lg:aspect-auto lg:min-h-[44rem]" />
+          <Photo id="warehouse" bleed parallax={5} sizes="(min-width: 1024px) 50vw, 100vw" className="aspect-[4/3] lg:aspect-auto lg:min-h-[44rem]" />
           <div className="px-[var(--page-gutter)] py-12 lg:py-20">
             <span data-rule="" className="rule" aria-hidden="true" />
             <h2 data-split="" className="t-title mt-5">

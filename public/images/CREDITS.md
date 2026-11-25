@@ -30,7 +30,15 @@ Public domain (works of the U.S. government). Their presence here implies no USD
 | greens-harvest.jpg | [20211105-FPAC-PJK-3403](https://commons.wikimedia.org/wiki/File:20211105-FPAC-PJK-3403_TONED.jpg) |
 | greens-close.jpg | [20211106-FPAC-PJK-13644](https://commons.wikimedia.org/wiki/File:20211106-FPAC-PJK-13644_TONED.jpg) |
 | packing-hands.jpg | Cropped from [Fruits and Vegetables (20140813-KS-Reclamation-0100)](https://commons.wikimedia.org/wiki/File:Fruits_and_Vegetables_(20140813-KS-Reclamation-0100).jpg) |
-| sorting-fruit.jpg | [Fruits and Vegetables (20141105-KS-Reclamation-0105)](https://commons.wikimedia.org/wiki/File:Fruits_and_Vegetables_(20141105-KS-Reclamation-0105).jpg) |
+| sorting-fruit.jpg | [Fruits and Vegetables (20141105-KS-Reclamation-0105)](https://commons.wikimedia.org/wiki/File:Fruits_and_Vegetables_(20141105-KS-Reclamation-0105).jpg) (no longer used: it actually shows a corridor of storage lockers) |
+| processing-line.jpg | [20171005-OSEC-PJK-1206](https://commons.wikimedia.org/wiki/File:20171005-OSEC-PJK-1206_TONED.jpg) |
+
+## Wikimedia Commons, other public-domain and CC0 photographs
+
+| File | Source | Licence |
+| --- | --- | --- |
+| produce-line.jpg | Cropped (third-party carton branding removed) from [Packhouse sorter](https://commons.wikimedia.org/wiki/File:Packhouse_sorter.jpg) | CC0 |
+| container-loading.jpg | Cropped (truck operator's name removed) from [Iraqi container truck, 2011](https://commons.wikimedia.org/wiki/File:Iraqi_container_truck,_2011.jpg) | Public domain |
 
 ## rawpixel
 

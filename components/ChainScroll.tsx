@@ -9,7 +9,7 @@ function Stage({ id, name, body, number }: { id: StageId; name: string; body: st
   const cold = coldStages.includes(id);
   return (
     <li data-stage="" className="chain-row relative ps-8 pb-7 md:ps-12 md:pb-10">
-      <span className={`chain-dot absolute start-0 top-2 size-3.5 -translate-x-[5px] rtl:translate-x-[5px] ${cold ? "bg-cold-bright" : "bg-amber"}`} aria-hidden="true" />
+      <span className={`chain-dot absolute start-0 top-2 size-3.5 rounded-full -translate-x-[5px] rtl:translate-x-[5px] ${cold ? "bg-cold-bright" : "bg-amber"}`} aria-hidden="true" />
       <div className="flex flex-wrap items-baseline gap-x-3">
         <span className="t-small font-bold">{number}</span>
         <h3 className="t-sub">{name}</h3>

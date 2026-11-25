@@ -5,7 +5,9 @@
  * Colours come from the El Kheirat logo: its green (forest, leaf), its gold (the `amber` token, used like a signal
  * colour), its blue (cold), and the copper of its outline (thin accents on light backgrounds, where gold is too pale).
  * Earth is the brown of its leaf, kept for illustration. Blue is reserved for cold-chain content.
- * Heavy type, square corners, thick rules, no shadows at rest.
+ * Corners follow the logo's rounded outline: buttons are pills like the outline itself, cards and photos take
+ * --radius-card, fields --radius-field. Full-width bands and banners stay square, since they meet the screen edge.
+ * Heavy type, thick rules, no shadows at rest.
  */
 @theme {
   --color-forest: #0b3a26;
@@ -16,7 +18,8 @@
   --color-sand-deep: #dcd3bf;
   --color-ink: #151a17;
   --color-charcoal: #1d2320;
-  --color-amber: #f0b531;
+  /* The logo's gold, taken from the middle of its copper-to-gold outline: warmer and deeper than a plain yellow. */
+  --color-amber: #d8a03f;
   --color-copper: #be7d3c;
   /* Gold dark enough for small text on paper and sand (≥ 4.5:1). */
   --color-gold-ink: #8a6212;
@@ -25,6 +28,9 @@
   --color-cold-deep: #083f6d;
   --color-cold-bright: #3b86d1;
   --color-error: #a3261b;
+
+  --radius-card: 1.25rem;
+  --radius-field: 0.75rem;
 
   --font-sans: var(--font-body);
   --font-display: var(--font-heading);
@@ -49,7 +55,7 @@
 
 ::-webkit-scrollbar-thumb {
   background: var(--color-forest);
-  border-radius: 0px;
+  border-radius: 999px;
   border: 1px solid var(--color-forest-deep);
   transition: background 0.3s ease;
 }

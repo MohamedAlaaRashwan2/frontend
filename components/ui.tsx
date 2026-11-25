@@ -25,7 +25,7 @@ const buttonStyles: Record<ButtonVariant, string> = {
 };
 
 const buttonClass = (variant: ButtonVariant) =>
-  `press arrow-nudge inline-flex min-h-13 items-center justify-center gap-3 px-6 py-3 text-center font-bold ${buttonStyles[variant]}`;
+  `press arrow-nudge inline-flex min-h-13 items-center justify-center gap-3 rounded-full px-7 py-3 text-center font-bold ${buttonStyles[variant]}`;
 
 export function ButtonLink({ href, children, variant = "amber" }: { href: string; children: React.ReactNode; variant?: ButtonVariant }) {
   return (
@@ -69,6 +69,7 @@ export async function Photo({
   position,
   reveal = "rise",
   parallax,
+  bleed = false,
 }: {
   id: ImageId;
   className?: string;
@@ -86,6 +87,8 @@ export async function Photo({
   reveal?: "rise" | "wide" | "hero";
   /** Drift strength in percent for full-width banners. */
   parallax?: number;
+  /** Runs to the screen edge (banners, half-screen panels): keeps square corners. Everything else is rounded. */
+  bleed?: boolean;
 }) {
   const [locale, dict] = await Promise.all([getLocale(), getDictionary()]);
   const image = images[id];
@@ -105,7 +108,7 @@ export async function Photo({
       />
   );
   return (
-    <div {...motion} className={`zoom-frame relative overflow-hidden bg-sand-deep ${className}`}>
+    <div {...motion} className={`zoom-frame relative overflow-hidden bg-sand-deep ${bleed ? "" : "rounded-card"} ${className}`}>
       {parallax ? (
         // Taller than the frame, so the drift never shows an edge.
         <div data-parallax={parallax} className="absolute inset-x-0 -top-[10%] h-[120%]">
@@ -115,7 +118,7 @@ export async function Photo({
         picture
       )}
       {!src && image.kind === "operations" && (
-        <span className="absolute start-0 bottom-0 bg-ink/85 px-2.5 py-1 text-[0.875rem] leading-snug text-paper">{dict.common.illustrative}</span>
+        <span className={`absolute bottom-0 bg-ink/85 px-2.5 py-1 text-[0.875rem] leading-snug text-paper ${bleed ? "start-0 rounded-se-lg" : "start-2 bottom-2 rounded-full"}`}>{dict.common.illustrative}</span>
       )}
     </div>
   );
@@ -251,7 +254,7 @@ export async function Steps({ items, highlight, columns = 4 }: { items: { name: 
       {items.map((step, i) => (
         <li key={step.name} className="border-t-2 border-current py-4 lg:pb-8" {...rise(i)}>
           <span className="t-small font-bold">{pad(i, locale)}</span>
-          <h3 className={`t-sub mt-1 w-fit ${i === highlight ? "bg-ink px-1.5 text-paper" : ""}`}>{step.name}</h3>
+          <h3 className={`t-sub mt-1 w-fit ${i === highlight ? "rounded-md bg-ink px-2 text-paper" : ""}`}>{step.name}</h3>
           {step.body && <p className="mt-1.5">{step.body}</p>}
         </li>
       ))}

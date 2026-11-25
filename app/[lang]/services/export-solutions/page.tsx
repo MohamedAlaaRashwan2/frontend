@@ -28,7 +28,7 @@ export default async function ExportSolutionsPage() {
           { label: dict.services.items.export.name, href: serviceHref("export") },
         ]}
       />
-      <Photo id="vessel" priority parallax={6} sizes="100vw" position="50% 60%" className="aspect-[16/10] md:aspect-[21/8]" />
+      <Photo bleed id="vessel" priority parallax={6} sizes="100vw" position="50% 60%" className="aspect-[16/10] md:aspect-[21/8]" />
       <Section title={dict.markets.label} intro={t.coverTitle}>
         <ExportRoutes locale={locale} />
         <div className="mt-10">

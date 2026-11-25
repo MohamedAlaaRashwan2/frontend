@@ -30,7 +30,7 @@ export default async function FoodProcessingPage() {
       {/* The picture holds still while the stages pass beside it. */}
       <section className="grid lg:grid-cols-2">
         <div className="lg:sticky lg:top-[var(--header-height)] lg:h-[calc(100svh-var(--header-height))]">
-          <Photo id="sortingFruit" sizes="(min-width: 1024px) 50vw, 100vw" className="aspect-[16/10] lg:aspect-auto lg:h-full" />
+          <Photo bleed id="processingLine" sizes="(min-width: 1024px) 50vw, 100vw" className="aspect-[16/10] lg:aspect-auto lg:h-full" />
         </div>
         <div className="px-[var(--page-gutter)] py-10 lg:py-16">
           <h2 data-split="" className="t-title">

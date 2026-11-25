@@ -18,7 +18,7 @@ export default async function AboutPage() {
   return (
     <>
       <PageHead tone="forest" title={t.title} intro={t.intro} crumbs={[{ label: dict.nav.about, href: "/about" }]} />
-      <Photo id="wheatSunset" priority parallax={6} sizes="100vw" className="aspect-[16/10] md:aspect-[21/8]" />
+      <Photo bleed id="wheatSunset" priority parallax={6} sizes="100vw" className="aspect-[16/10] md:aspect-[21/8]" />
       <section className="chapter bg-amber text-ink">
         <div className="shell">
           <h2 className="t-sub" {...rise()}>

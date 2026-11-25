@@ -4,7 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { EASE, gsap, prefersReducedMotion, useGSAP } from "@/lib/motion/gsap";
+import type { ServiceArt } from "@/lib/content";
 import { ColdRoomArt } from "./ColdRoomArt";
+import { PrivateLabelArt } from "./PrivateLabelArt";
 import { Icon } from "./Icon";
 
 export type ServiceRow = {
@@ -13,6 +15,8 @@ export type ServiceRow = {
   name: string;
   short: string;
   image?: { src: string; alt: string; illustrative: boolean };
+  /** A drawing in place of a photograph. */
+  art?: ServiceArt;
 };
 
 /**
@@ -69,7 +73,7 @@ export function ServiceIndex({ rows, illustrative }: { rows: ServiceRow[]; illus
         ))}
       </ul>
       <div className="hidden lg:col-span-5 lg:block">
-        <div ref={stage} data-photo="" className="sticky top-[calc(var(--header-height)+1.5rem)] aspect-[4/5] overflow-hidden bg-cold-deep">
+        <div ref={stage} data-photo="" className="sticky top-[calc(var(--header-height)+1.5rem)] aspect-[4/5] overflow-hidden rounded-card bg-cold-deep">
           {rows.map((row, i) => {
             const on = i === active;
             return (
@@ -82,12 +86,12 @@ export function ServiceIndex({ rows, illustrative }: { rows: ServiceRow[]; illus
                     <span />
                   )
                 ) : (
-                  <ColdRoomArt className="absolute inset-0 size-full" />
+                  row.art === "label" ? <PrivateLabelArt className="absolute inset-0 size-full" /> : <ColdRoomArt className="absolute inset-0 size-full" />
                 )}
               </div>
             );
           })}
-          {current.image?.illustrative && <span className="absolute start-0 bottom-0 z-[3] bg-ink/85 px-2.5 py-1 text-[0.875rem] leading-snug text-paper">{illustrative}</span>}
+          {current.image?.illustrative && <span className="absolute start-2 bottom-2 z-[3] rounded-full bg-ink/85 px-2.5 py-1 text-[0.875rem] leading-snug text-paper">{illustrative}</span>}
         </div>
       </div>
     </div>

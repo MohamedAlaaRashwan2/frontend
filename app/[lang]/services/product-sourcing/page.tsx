@@ -24,7 +24,7 @@ export default async function ProductSourcingPage() {
           { label: dict.services.items.sourcing.name, href: serviceHref("sourcing") },
         ]}
       />
-      <Photo id="harvest" priority parallax={6} sizes="100vw" position="50% 35%" className="aspect-[16/10] md:aspect-[21/8]" />
+      <Photo bleed id="harvest" priority parallax={6} sizes="100vw" position="50% 35%" className="aspect-[16/10] md:aspect-[21/8]" />
       {/* The page's shape is the relationship: two sides, each with its own way in. */}
       <section className="grid lg:grid-cols-2">
         <div className="on-dark bg-forest px-[var(--page-gutter)] py-12 text-paper lg:py-20" {...rise()}>

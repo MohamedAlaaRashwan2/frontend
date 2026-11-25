@@ -23,7 +23,7 @@ export default async function QualityPage() {
       <Section title={t.pointsTitle}>
         <Rows items={t.points} />
       </Section>
-      <Photo id="packingHands" reveal="wide" parallax={6} sizes="100vw" className="aspect-[16/9] md:aspect-[3/1]" />
+      <Photo bleed id="packingHands" reveal="wide" parallax={6} sizes="100vw" className="aspect-[16/9] md:aspect-[3/1]" />
       <section id="certificates" className="chapter on-dark bg-charcoal text-paper">
         <div className="shell">
           <SectionHead title={t.certsTitle} />

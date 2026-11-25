@@ -13,7 +13,7 @@ type Labels = Dictionary["contact"];
 const autoComplete: Partial<Record<InquiryField, string>> = { name: "name", company: "organization", email: "email", phone: "tel", country: "country-name" };
 
 const inputClass =
-  "mt-1.5 block w-full min-h-12 bg-white px-3.5 py-3 text-ink ring-1 ring-inset ring-ink/45 placeholder:text-ink/60 transition-shadow duration-150 focus:ring-2 focus:ring-forest focus:outline-none aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-error";
+  "mt-1.5 block w-full min-h-12 rounded-field bg-white px-3.5 py-3 text-ink ring-1 ring-inset ring-ink/45 placeholder:text-ink/60 transition-shadow duration-150 focus:ring-2 focus:ring-forest focus:outline-none aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-error";
 
 type Props = {
   locale: Locale;
@@ -68,11 +68,11 @@ function InquiryForm({ locale, labels, initialIntent, initialProduct = "", fixed
 
   if (state.status === "success") {
     return (
-      <div ref={successRef} tabIndex={-1} role="status" className="form-step bg-forest p-8 text-paper on-dark focus:outline-none md:p-12">
+      <div ref={successRef} tabIndex={-1} role="status" className="form-step rounded-card bg-forest p-8 text-paper on-dark focus:outline-none md:p-12">
         <Icon name="check" className="size-10 text-amber" strokeWidth={2.25} />
         <h3 className="t-sub mt-5">{labels.successTitle}</h3>
         <p className="mt-3 max-w-text">{labels.successBody}</p>
-        <button type="button" onClick={onReset} className="press mt-7 min-h-12 bg-amber px-5 font-bold text-ink hover:bg-paper">
+        <button type="button" onClick={onReset} className="press mt-7 min-h-12 rounded-full bg-amber px-6 font-bold text-ink hover:bg-paper">
           {labels.another}
         </button>
       </div>
@@ -127,7 +127,7 @@ function InquiryForm({ locale, labels, initialIntent, initialProduct = "", fixed
         </label>
       </div>
       <noscript>
-        <p className="bg-paper p-4 font-bold text-error">{labels.noscript}</p>
+        <p className="rounded-field bg-paper p-4 font-bold text-error">{labels.noscript}</p>
       </noscript>
 
       {!fixed && (
@@ -139,7 +139,7 @@ function InquiryForm({ locale, labels, initialIntent, initialProduct = "", fixed
               return (
                 <label
                   key={option}
-                  className={`press relative flex min-h-14 cursor-pointer items-center p-3.5 font-bold has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-cold-bright ${
+                  className={`press relative flex min-h-14 cursor-pointer items-center rounded-field p-3.5 font-bold has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-cold-bright ${
                     selected ? "bg-ink text-paper" : "bg-paper text-ink hover:bg-sand-deep"
                   }`}
                 >
@@ -206,7 +206,7 @@ function InquiryForm({ locale, labels, initialIntent, initialProduct = "", fixed
           </div>
 
           {bannerKey && (
-            <p role="alert" className="mt-6 bg-white p-4 font-bold text-error">
+            <p role="alert" className="mt-6 rounded-field bg-white p-4 font-bold text-error">
               {fill(labels.errors[bannerKey], { email: site.contact.email })}
             </p>
           )}
@@ -215,7 +215,7 @@ function InquiryForm({ locale, labels, initialIntent, initialProduct = "", fixed
             <button
               type="submit"
               disabled={pending}
-              className="press arrow-nudge inline-flex min-h-13 shrink-0 items-center justify-center gap-3 bg-forest px-6 py-3 font-bold text-paper hover:bg-ink disabled:cursor-wait disabled:opacity-75"
+              className="press arrow-nudge inline-flex min-h-13 shrink-0 items-center justify-center gap-3 rounded-full bg-forest px-7 py-3 font-bold text-paper hover:bg-ink disabled:cursor-wait disabled:opacity-75"
             >
               {pending ? labels.sending : labels.intents[intent].submit}
               {!pending && <Icon name="arrow" className="size-5" strokeWidth={2} />}

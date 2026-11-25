@@ -42,7 +42,7 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
     <html lang={locale} dir={dirOf(locale)} className={`${fonts.join(" ")} antialiased`} suppressHydrationWarning>
       <body className="flex min-h-svh flex-col">
         <script dangerouslySetInnerHTML={{ __html: motionScript }} />
-        <a href="#main" className="sr-only z-[60] bg-ink px-5 py-3 font-bold text-paper focus:not-sr-only focus:fixed focus:start-4 focus:top-4">
+        <a href="#main" className="sr-only z-[60] rounded-full bg-ink px-5 py-3 font-bold text-paper focus:not-sr-only focus:fixed focus:start-4 focus:top-4">
           {dict.nav.skip}
         </a>
         <MotionProvider>

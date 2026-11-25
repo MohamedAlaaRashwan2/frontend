@@ -104,20 +104,20 @@ export function ExportRoutes({ locale }: { locale: Locale }) {
   const rows = useRef<(HTMLLIElement | null)[]>([]);
   const desktop = useMediaQuery(MQ.desktop);
   const reduce = useMediaQuery(MQ.reduce);
-  const [active, setActive] = useState<number | null>(null);
+  // Hover drives the highlight on desktop, scroll position (or a tap) everywhere else; whichever applies is shown.
+  const [hovered, setHovered] = useState<number | null>(null);
+  const [spied, setSpied] = useState<number | null>(null);
+  const active = desktop ? hovered : spied;
   // useId() returns ":r1:"-style ids, which aren't valid inside url()/href references.
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const t = (text: Text) => text[locale];
 
   // Phones and tablets: the row crossing the middle of the viewport is the active one. Off on desktop (hover only).
   useEffect(() => {
-    if (desktop) {
-      setActive(null);
-      return;
-    }
+    if (desktop) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) if (entry.isIntersecting) setActive(Number((entry.target as HTMLElement).dataset.index));
+        for (const entry of entries) if (entry.isIntersecting) setSpied(Number((entry.target as HTMLElement).dataset.index));
       },
       { rootMargin: "-45% 0px -45% 0px" },
     );
@@ -177,10 +177,10 @@ export function ExportRoutes({ locale }: { locale: Locale }) {
       ref={root}
       style={{ "--row-h": `${ROW_H}px` } as React.CSSProperties}
       className="grid lg:grid-cols-[minmax(0,5fr)_180px_minmax(0,7fr)]"
-      onPointerLeave={() => desktop && setActive(null)}
+      onPointerLeave={() => desktop && setHovered(null)}
     >
       {/* ── Origin ── */}
-      <div className="on-dark relative flex min-h-[200px] flex-col justify-between gap-8 bg-forest bg-[radial-gradient(rgb(247_244_237/0.08)_1px,transparent_1.5px)] bg-[length:18px_18px] p-6 text-paper sm:min-h-[260px] sm:p-8 lg:min-h-0">
+      <div className="on-dark relative flex min-h-[200px] flex-col rounded-card justify-between gap-8 bg-forest bg-[radial-gradient(rgb(247_244_237/0.08)_1px,transparent_1.5px)] bg-[length:18px_18px] p-6 text-paper sm:min-h-[260px] sm:p-8 lg:min-h-0">
         <div className="flex items-center gap-2.5">
           <Pin className="size-5 text-amber" />
           <span className="text-xs font-semibold tracking-widest uppercase opacity-60 rtl:tracking-normal">{t(LABELS.origin)}</span>
@@ -199,7 +199,7 @@ export function ExportRoutes({ locale }: { locale: Locale }) {
         {/* Origin dot: on the bottom edge above the route on phones, on the end edge facing the curves on desktop. */}
         <span
           aria-hidden="true"
-          className="absolute start-[calc(1.25rem-6px)] bottom-0 z-10 size-3.5 translate-y-1/2 rounded-full bg-amber ring-3 ring-paper lg:start-auto lg:end-0 lg:bottom-auto lg:top-1/2 lg:translate-x-1/2 lg:-translate-y-1/2 rtl:lg:-translate-x-1/2"
+          className="absolute start-[calc(2rem-6px)] bottom-0 z-10 size-3.5 translate-y-1/2 rounded-full bg-amber ring-3 ring-paper lg:start-auto lg:end-0 lg:bottom-auto lg:top-1/2 lg:translate-x-1/2 lg:-translate-y-1/2 rtl:lg:-translate-x-1/2"
         />
       </div>
 
@@ -245,7 +245,7 @@ export function ExportRoutes({ locale }: { locale: Locale }) {
       {/* ── Markets ── */}
       <div className="relative">
         {/* Phones and tablets: the shipment that travels down the route once it has drawn. */}
-        {!reduce && <span data-shipment="" aria-hidden="true" className="invisible absolute start-[calc(1.25rem-3px)] top-0 z-10 size-2 rounded-full bg-amber lg:hidden" />}
+        {!reduce && <span data-shipment="" aria-hidden="true" className="invisible absolute start-[calc(2rem-3px)] top-0 z-10 size-2 rounded-full bg-amber lg:hidden" />}
 
         <ul>
           {MARKETS.map((market, i) => (
@@ -255,20 +255,20 @@ export function ExportRoutes({ locale }: { locale: Locale }) {
                 rows.current[i] = el;
               }}
               data-index={i}
-              onClick={() => !desktop && setActive(i)}
-              onPointerEnter={() => desktop && setActive(i)}
-              className={`relative border-b border-black/10 py-6 ps-12 pe-2 transition-colors duration-300 last:border-b-0 sm:ps-14 lg:flex lg:h-[var(--row-h)] lg:flex-col lg:justify-center lg:py-0 lg:ps-6 ${lit(i) ? "bg-forest/[0.04]" : ""}`}
+              onClick={() => !desktop && setSpied(i)}
+              onPointerEnter={() => desktop && setHovered(i)}
+              className={`relative border-b border-black/10 py-6 ps-16 pe-2 transition-colors duration-300 last:border-b-0 sm:ps-[4.5rem] lg:flex lg:h-[var(--row-h)] lg:flex-col lg:justify-center lg:py-0 lg:ps-6 ${lit(i) ? "rounded-field bg-forest/[0.04]" : ""}`}
             >
               {/* This row's stretch of the route: the last one stops at its node. */}
               <span
                 data-line=""
                 aria-hidden="true"
-                className={`absolute start-5 top-0 w-0.5 origin-top bg-forest lg:hidden ${i === MARKETS.length - 1 ? "h-[2.55rem] sm:h-[2.85rem]" : "bottom-0"}`}
+                className={`absolute start-8 top-0 w-0.5 origin-top bg-forest lg:hidden ${i === MARKETS.length - 1 ? "h-[2.55rem] sm:h-[2.85rem]" : "bottom-0"}`}
               />
               <span
                 data-node=""
                 aria-hidden="true"
-                className={`absolute start-[calc(1.25rem-6px)] top-[2.1rem] size-3.5 rounded-full border-2 transition-colors duration-300 sm:top-[2.4rem] lg:hidden ${lit(i) ? "border-copper bg-amber" : "border-forest bg-paper"}`}
+                className={`absolute start-[calc(2rem-6px)] top-[2.1rem] size-3.5 rounded-full border-2 transition-colors duration-300 sm:top-[2.4rem] lg:hidden ${lit(i) ? "border-copper bg-amber" : "border-forest bg-paper"}`}
               />
               <div className={`flex items-baseline gap-3 transition-transform duration-300 ${lit(i) ? "motion-safe:translate-x-1 motion-safe:rtl:-translate-x-1" : ""}`}>
                 <span className="text-sm font-bold text-gold-ink tabular-nums">{pad(i, locale)}</span>

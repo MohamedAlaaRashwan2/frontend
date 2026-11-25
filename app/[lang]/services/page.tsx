@@ -3,7 +3,7 @@ import { Words } from "@/components/motion/Words";
 import { ChainScroll } from "@/components/ChainScroll";
 import { ServiceIndex } from "@/components/ServiceIndex";
 import { CtaBand, PageHead, rise } from "@/components/ui";
-import { contactHref, images, serviceHref, serviceImage, serviceKeys } from "@/lib/content";
+import { contactHref, serviceHref, serviceKeys, serviceVisual } from "@/lib/content";
 import { localizePath } from "@/lib/i18n/config";
 import { getDictionary, getLocale } from "@/lib/i18n/server";
 import { pageMetadata } from "@/lib/seo";
@@ -25,13 +25,14 @@ export default async function ServicesPage() {
           <ServiceIndex
             illustrative={dict.common.illustrative}
             rows={serviceKeys.map((key) => {
-              const image = key === "coldStorage" ? undefined : images[serviceImage[key]];
+              const { image, art } = serviceVisual(key);
               return {
                 key,
                 href: localizePath(serviceHref(key), locale),
                 name: t.items[key].name,
                 short: t.items[key].short,
                 image: image && { src: image.src, alt: image[locale], illustrative: image.kind === "operations" },
+                art,
               };
             })}
           />

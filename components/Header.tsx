@@ -208,7 +208,7 @@ export function Header({ locale, labels, brand, solutions }: Props) {
                     <Icon name="chevron" className={`size-4 transition-transform duration-200 ${solutionsOpen ? "rotate-180" : ""}`} strokeWidth={2.25} />
                   </button>
                   {/* Always in the DOM so it can animate out; display:none keeps it out of the tab order while closed. */}
-                  <div ref={solutionsMenu} id="solutions-menu" style={{ display: "none" }} className="absolute start-0 top-[calc(100%+0.8rem)] w-[34rem] bg-paper p-2 shadow-float">
+                  <div ref={solutionsMenu} id="solutions-menu" style={{ display: "none" }} className="absolute start-0 top-[calc(100%+0.8rem)] w-[34rem] rounded-card bg-paper p-2 shadow-float">
                       <ul>
                         {solutions.map((s) => (
                           <li key={s.href} data-menu-item="">
@@ -216,7 +216,7 @@ export function Header({ locale, labels, brand, solutions }: Props) {
                               href={to(s.href)}
                               onClick={() => setSolutionsOpen(false)}
                               aria-current={pathname === to(s.href) ? "page" : undefined}
-                              className="block p-3 transition-colors duration-150 hover:bg-sand aria-[current=page]:bg-sand"
+                              className="block rounded-field p-3 transition-colors duration-150 hover:bg-sand aria-[current=page]:bg-sand"
                             >
                               <span className="block font-bold">{s.name}</span>
                               <span className="t-small mt-0.5 block text-ink/80">{s.short}</span>
@@ -224,7 +224,7 @@ export function Header({ locale, labels, brand, solutions }: Props) {
                           </li>
                         ))}
                       </ul>
-                      <Link data-menu-item="" href={to("/services")} onClick={() => setSolutionsOpen(false)} className="block bg-sand p-3 font-bold transition-colors duration-150 hover:bg-sand-deep">
+                      <Link data-menu-item="" href={to("/services")} onClick={() => setSolutionsOpen(false)} className="block rounded-field bg-sand p-3 font-bold transition-colors duration-150 hover:bg-sand-deep">
                         {labels.allServices}
                       </Link>
                   </div>
@@ -251,7 +251,7 @@ export function Header({ locale, labels, brand, solutions }: Props) {
           >
             {localeNames[otherLocale]}
           </Link>
-          <Link href={to("/contact")} className="press hidden min-h-11 items-center bg-ink px-5 font-bold whitespace-nowrap text-paper hover:bg-forest sm:inline-flex">
+          <Link href={to("/contact")} className="press hidden min-h-11 items-center rounded-full bg-ink px-6 font-bold whitespace-nowrap text-paper hover:bg-forest sm:inline-flex">
             {labels.consult}
           </Link>
           <button

@@ -134,11 +134,14 @@ export function MotionDirector() {
         q("[data-photo]:not([data-risen])").forEach((frame) => {
           const img = frame.querySelector("img");
           const wide = frame.dataset.photo === "wide" && desktop;
+          // Rounded frames keep their corners through the reveal (clip-path would otherwise square them off).
+          const radius = getComputedStyle(frame).borderTopLeftRadius;
+          const round = radius && radius !== "0px" ? ` round ${radius}` : "";
           const tl = gsap.timeline({ scrollTrigger: { trigger: frame, start: "top 88%", once: true } });
           tl.fromTo(
             frame,
-            { clipPath: wide ? "inset(14% 10% 14% 10%)" : "inset(100% 0% 0% 0%)" },
-            { clipPath: "inset(0% 0% 0% 0%)", duration: wide ? 1.4 : 1.1, ease: EASE.reveal },
+            { clipPath: (wide ? "inset(14% 10% 14% 10%" : "inset(100% 0% 0% 0%") + round + ")" },
+            { clipPath: "inset(0% 0% 0% 0%" + round + ")", duration: wide ? 1.4 : 1.1, ease: EASE.reveal },
           );
           if (img) tl.fromTo(img, { scale: 1.14 }, { scale: 1, duration: 1.6, ease: EASE.reveal }, 0);
           tl.eventCallback("onComplete", settle([frame], img ? [frame, img] : [frame]));
